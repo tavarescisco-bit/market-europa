@@ -1,0 +1,91 @@
+---
+import Base from '../layouts/Base.astro';
+import Masthead from '../components/Masthead.astro';
+import SpecialCard from '../components/SpecialCard.astro';
+import Subscribe from '../components/Subscribe.astro';
+import HoursTable from '../components/HoursTable.astro';
+import site from '../data/site.json';
+import { u } from '../lib/url';
+import { loadSpecials, liveSpecials, scheduledSpecials, campaigns } from '../lib/specials';
+
+const all = loadSpecials();
+const live = liveSpecials(all);
+const liveCampaigns = campaigns(live);
+const main = liveCampaigns.find(c => c.items.some(i => !i.liquor)) ?? liveCampaigns[0];
+const next = scheduledSpecials(all)[0];
+const preview = [...live.filter(i => !i.liquor)].sort((a, b) => Number(b.isHero) - Number(a.isHero) || a.sortOrder - b.sortOrder).slice(0, 8);
+const depts = site.departments;
+---
+<Base title="European supermarket, deli, butcher, seafood and café in Moorabbin" description="Market Europa Moorabbin: family-run continental supermarket with weekly specials, deli and cheese, in-house butcher, fresh seafood, handmade pasta, bakery, European groceries and a café. Shop 5/444 Warrigal Rd, Heatherton." current="/">
+  <div class="wrap" style="padding-top:1rem">
+    <Masthead campaign={main} nextStart={next?.start} />
+  </div>
+
+  <section class="section" aria-labelledby="sp-title">
+    <div class="wrap">
+      <div class="section-head">
+        <div><span class="eyebrow">Catalogue layer</span><h2 id="sp-title">This week's specials</h2></div>
+        <p>{live.length} offers on now · <a href={u('/specials')}>see all, filter by department</a></p>
+      </div>
+      {preview.length ? <div class="cards">{preview.map(s => <SpecialCard s={s} />)}</div>
+        : <div class="notice">This week's specials are in store now. The new catalogue goes live on Monday.</div>}
+      <p style="margin-top:1rem"><a class="btn" href={u('/specials')}>See all {live.length} specials</a></p>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="dept-title" style="background:var(--paper-deep)">
+    <div class="wrap">
+      <div class="section-head"><div><span class="eyebrow">All under one roof</span><h2 id="dept-title">Shop by department</h2></div></div>
+      <div class="tiles">
+        {depts.map(d => (
+          <a class="tile" href={u(`/departments/${d.slug}`)} style={`background:${d.colour}`}>
+            <span class="t">{d.name}</span>
+            <span class="s">{d.blurb}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="cafe-title">
+    <div class="wrap split">
+      <div class="panel">
+        <span class="eyebrow">Café</span>
+        <h2 id="cafe-title">Antonio's fresh gnocchi bar</h2>
+        <p>{site.cafe.intro}</p>
+        <p>Café hours: {site.cafeHours.map(h => `${h.day} ${h.open} – ${h.close}`).join(' · ')}.</p>
+        <a class="btn green" href={u('/cafe')}>View the menu</a>
+      </div>
+      <div class="panel">
+        <span class="eyebrow">Fresh this week</span>
+        <h2>Made here, landed here</h2>
+        <p>Fresh pasta and gnocchi are handmade in the market every day. Seafood arrives through the week, with the widest range on Thursdays. Our butchers cut to order.</p>
+        <p><a href={u('/departments/fresh-pasta')}>Fresh pasta and ready meals</a> · <a href={u('/departments/seafood')}>Seafood</a> · <a href={u('/departments/butcher')}>Butcher</a></p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="visit-title" style="background:var(--paper-deep)">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">Visit</span>
+        <h2 id="visit-title">Moorabbin Super Centre, Warrigal Road</h2>
+        <p>{site.address.line1}, {site.address.centre}, {site.address.locality} {site.address.region} {site.address.postcode}. Free parking at the centre.</p>
+        <p><a class="btn" href={site.mapsUrl} rel="noopener">Get directions</a> <a class="btn ghost" href={site.phoneHref}>Call {site.phone}</a></p>
+        <p><a href={u('/visit')}>Parking, public transport and holiday hours</a></p>
+      </div>
+      <div><HoursTable /></div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="story-title">
+    <div class="wrap">
+      <span class="eyebrow">Our story</span>
+      <h2 id="story-title">A family-run continental supermarket</h2>
+      <p>Market Europa is a family-run continental supermarket in the Moorabbin and Kingston area: fruit and veg, a deli and cheese cabinet, in-house butchers, fresh seafood, handmade pasta, bakery and a café, all under one roof. [Family story, year established and names to be supplied by the store.]</p>
+      <p><a href={u('/about')}>Read more</a> · <a href={u('/catering')}>Platters and catering enquiries</a></p>
+    </div>
+  </section>
+
+  <Subscribe />
+</Base>

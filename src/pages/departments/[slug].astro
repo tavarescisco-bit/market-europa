@@ -1,0 +1,37 @@
+---
+import Base from '../../layouts/Base.astro';
+import SpecialCard from '../../components/SpecialCard.astro';
+import site from '../../data/site.json';
+import { u } from '../../lib/url';
+import { liveSpecials, deptSlugFor } from '../../lib/specials';
+
+export function getStaticPaths() {
+  return site.departments.map(d => ({ params: { slug: d.slug }, props: { d } }));
+}
+const { d } = Astro.props as { d: (typeof site.departments)[number] & { liquor?: boolean } };
+const live = liveSpecials().filter(s => deptSlugFor(s.department) === d.slug);
+const others = site.departments.filter(x => x.slug !== d.slug);
+---
+<Base title={`${d.name} in Moorabbin`} description={`${d.name} at Market Europa Moorabbin: ${d.blurb} ${live.length ? `${live.length} specials on now.` : ''} Shop 5/444 Warrigal Rd, Heatherton.`} current="/departments">
+  <div class="wrap section">
+    <span class="eyebrow">Department</span>
+    <h1>{d.name}</h1>
+    <p>{d.intro}</p>
+    {d.liquor && <div class="notice liquor"><strong>18+ only.</strong> Liquor is sold in store to customers aged 18 and over. [Liquor licence number and the Liquor Control Victoria warning notice to be added once the licence is confirmed.]</div>}
+    <p>Serving Moorabbin, Heatherton, Cheltenham, Bentleigh East, Dingley Village, Highett and Clayton South from Moorabbin Super Centre, with free parking. <a href={u('/visit')}>Hours and directions</a>.</p>
+
+    <h2 style="margin-top:2rem">{d.name} specials this week</h2>
+    {live.length ? <div class="cards" style="margin-top:1rem">{live.map(s => <SpecialCard s={s} />)}</div>
+      : <div class="notice">No {d.name.toLowerCase()} specials in this week's catalogue. See <a href={u('/specials')}>all specials</a>.</div>}
+
+    <div class="panel" style="margin-top:2rem">
+      <span class="eyebrow">Photography placeholder</span>
+      <p style="margin:0">Department photography (counter, products, team) is scheduled for the photo day. This panel is replaced by the image.</p>
+    </div>
+
+    <h2 style="margin-top:2rem">Other departments</h2>
+    <div class="tiles" style="margin-top:1rem">
+      {others.map(o => <a class="tile" href={u(`/departments/${o.slug}`)} style={`background:${o.colour};min-height:110px`}><span class="t">{o.name}</span></a>)}
+    </div>
+  </div>
+</Base>

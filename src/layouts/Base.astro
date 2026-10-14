@@ -1,0 +1,130 @@
+---
+import '../styles/global.css';
+import site from '../data/site.json';
+import { u } from '../lib/url';
+import { liveSpecials, campaigns, fmtRange } from '../lib/specials';
+
+interface Props { title: string; description: string; current?: string; schema?: object | object[]; noindex?: boolean }
+const { title, description, current = '', schema, noindex = false } = Astro.props;
+
+const now = new Date();
+const dow = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(new Intl.DateTimeFormat('en-US', { weekday: 'short', timeZone: 'Australia/Melbourne' }).format(now));
+const today = site.hours.find(h => h.dow === dow) ?? site.hours[0];
+const live = liveSpecials();
+const liveCampaign = campaigns(live)[0];
+const strip = liveCampaign ? `Specials on now until ${fmtRange(liveCampaign.start, liveCampaign.end).split('–')[1].trim()}` : 'New specials every Monday';
+
+const storeSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'GroceryStore',
+  name: site.name,
+  image: Astro.site ? new URL(u('/og.png'), Astro.site).toString() : undefined,
+  telephone: '+61 3 9558 0755',
+  url: Astro.site ? new URL(u('/'), Astro.site).toString() : undefined,
+  address: { '@type': 'PostalAddress', streetAddress: site.address.line1, addressLocality: site.address.locality, addressRegion: site.address.region, postalCode: site.address.postcode, addressCountry: 'AU' },
+  geo: { '@type': 'GeoCoordinates', latitude: site.address.lat, longitude: site.address.lng },
+  openingHoursSpecification: site.hours.map(h => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: h.day, opens: h.open, closes: h.close })),
+  sameAs: [site.social.facebook, site.social.instagram],
+  department: { '@type': 'CafeOrCoffeeShop', name: site.cafe.name, servesCuisine: 'Italian', openingHoursSpecification: site.cafeHours.map(h => ({ '@type': 'OpeningHoursSpecification', dayOfWeek: h.day, opens: h.open, closes: h.close })) },
+};
+const schemas = [storeSchema, ...(Array.isArray(schema) ? schema : schema ? [schema] : [])];
+const nav = [
+  ['/specials', 'Specials'], ['/departments', 'Departments'], ['/cafe', 'Café'], ['/visit', 'Visit'],
+];
+---
+<!doctype html>
+<html lang="en-AU">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{title} · {site.shortName} Moorabbin</title>
+  <meta name="description" content={description}>
+  {noindex && <meta name="robots" content="noindex">}
+  <link rel="canonical" href={Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : Astro.url.pathname}>
+  <meta property="og:title" content={`${title} · ${site.shortName} Moorabbin`}>
+  <meta property="og:description" content={description}>
+  <meta property="og:type" content="website">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+  <link rel="icon" href={u('/favicon.svg')} type="image/svg+xml">
+  <script type="application/ld+json" set:html={JSON.stringify(schemas)} />
+</head>
+<body>
+  <a class="skip" href="#main">Skip to content</a>
+  <div class="staging">Staging preview · prices seeded from the current Canva artwork, to be verified by the store before launch</div>
+  <div class="strip">
+    <div class="wrap">
+      <span><span class="open">Open today {today.open} – {today.close}</span> · {site.address.line1}, {site.address.locality}</span>
+      <span>{strip} · <a href={site.mapsUrl} rel="noopener">Directions</a> · <a href={site.phoneHref}>{site.phone}</a></span>
+    </div>
+  </div>
+  <header class="site">
+    <div class="wrap">
+      <a class="logo" href={u('/')} aria-label="Market Europa Moorabbin home">
+        <span class="mark">Market<br>Europa <small>Moorabbin · est. family-run</small></span>
+      </a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" id="menu-toggle">Menu</button>
+      <nav class="primary" id="primary-nav" aria-label="Primary">
+        <ul>
+          {nav.map(([href, label]) => <li><a href={u(href)} aria-current={current === href ? 'page' : undefined}>{label}</a></li>)}
+          <li><a href={u('/about')} aria-current={current === '/about' ? 'page' : undefined}>Our story</a></li>
+        </ul>
+      </nav>
+      <div class="header-cta">
+        <a class="tel" href={site.phoneHref}>{site.phone}</a>
+        <a class="btn ghost" href={site.mapsUrl} rel="noopener">Directions</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <slot />
+  </main>
+
+  <footer class="site">
+    <div class="wrap">
+      <div class="cols">
+        <div>
+          <h3>{site.name}</h3>
+          <p>{site.address.line1}<br>{site.address.centre}<br>{site.address.locality} {site.address.region} {site.address.postcode}<br><a href={site.phoneHref}>{site.phone}</a></p>
+          <p><a href={site.social.facebook} rel="noopener">Facebook</a> · <a href={site.social.instagram} rel="noopener">Instagram</a></p>
+        </div>
+        <div>
+          <h3>Hours</h3>
+          <ul>{site.hours.map(h => <li>{h.day} {h.open} – {h.close}</li>)}</ul>
+          <p style="margin-top:.6rem;font-size:.85rem">Café {site.cafeHours.map(h => `${h.day} ${h.open} – ${h.close}`).join(' · ')}</p>
+        </div>
+        <div>
+          <h3>Site</h3>
+          <ul>
+            <li><a href={u('/specials')}>This week's specials</a></li>
+            <li><a href={u('/departments')}>Departments</a></li>
+            <li><a href={u('/cafe')}>Café menu</a></li>
+            <li><a href={u('/visit')}>Visit, parking and hours</a></li>
+            <li><a href={u('/catering')}>Platters and catering enquiries</a></li>
+            <li><a href={u('/privacy')}>Privacy</a> · <a href={u('/accessibility')}>Accessibility</a></li>
+            <li><a href={site.sisterStore.url} rel="noopener">{site.sisterStore.name}</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="legal">
+        <p>Specials are available at Market Europa Moorabbin for the dates shown, while stocks last. Prices include GST. Liquor is sold in store only to persons aged 18 and over. [Legal entity name and ABN to be confirmed] · [Liquor licence number to be confirmed]</p>
+      </div>
+    </div>
+  </footer>
+
+  <nav class="actionbar" aria-label="Quick actions">
+    <a href={u('/specials')} class={current === '/specials' ? 'hot' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M20 12l-8 8-9-9V3h8l9 9z"/><circle cx="7.5" cy="7.5" r="1.5"/></svg>Specials</a>
+    <a href={site.mapsUrl} rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M12 22s7-7.1 7-12a7 7 0 0 0-14 0c0 4.9 7 12 7 12z"/><circle cx="12" cy="10" r="2.5"/></svg>Directions</a>
+    <a href={site.phoneHref}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>Call</a>
+    <a href={u('/cafe')} class={current === '/cafe' ? 'hot' : ''}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 8h12v6a4 4 0 0 1-4 4H8a4 4 0 0 1-4-4V8z"/><path d="M16 10h2a2 2 0 0 1 0 4h-2M6 2v3M10 2v3"/></svg>Café</a>
+  </nav>
+
+  <script>
+    const t = document.getElementById('menu-toggle');
+    const n = document.getElementById('primary-nav');
+    t?.addEventListener('click', () => { const open = n!.classList.toggle('open'); t.setAttribute('aria-expanded', String(open)); });
+  </script>
+</body>
+</html>

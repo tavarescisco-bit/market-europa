@@ -1,0 +1,33 @@
+---
+import type { Campaign } from '../lib/specials';
+import { fmtRange } from '../lib/specials';
+import { u } from '../lib/url';
+interface Props { campaign?: Campaign; nextStart?: string }
+const { campaign, nextStart } = Astro.props;
+const hero = campaign?.items.find(i => i.isHero && !i.liquor) ?? campaign?.items.find(i => !i.liquor);
+const count = campaign?.items.length ?? 0;
+---
+<section class="masthead" aria-labelledby="mh-title">
+  <div class="inner">
+    <div>
+      <span class="ribbon">{campaign ? 'Specials of the week' : 'Market Europa Moorabbin'}</span>
+      <h1 class="title" id="mh-title">
+        {campaign ? <>{count} specials <span>Deli · butcher · seafood · pantry</span></> : <>A European market <span>in Melbourne's south east</span></>}
+      </h1>
+      {campaign && <span class="dates">{fmtRange(campaign.start, campaign.end)}</span>}
+      {!campaign && nextStart && <span class="dates">New specials from {fmtRange(nextStart, nextStart).split('–')[0]}</span>}
+      <div class="ctas">
+        <a class="btn" href={u('/specials')}>{campaign ? 'See all specials' : "This week's specials"}</a>
+        <a class="btn ghost" href={u('/visit')}>Plan your visit</a>
+      </div>
+    </div>
+    {hero && (
+      <div class="sunburst" role="img" aria-label={`Hero special: ${hero.brand} ${hero.name} ${hero.priceLabel} ${hero.priceSuffix}`}>
+        <div>
+          <div class="name">{hero.brand ? `${hero.brand} ` : ''}{hero.name}</div>
+          <div class="price">{hero.priceLabel}<small> {hero.priceSuffix}</small></div>
+        </div>
+      </div>
+    )}
+  </div>
+</section>

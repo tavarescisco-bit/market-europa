@@ -1,0 +1,21 @@
+---
+import Base from '../../layouts/Base.astro';
+import SpecialCard from '../../components/SpecialCard.astro';
+import { u } from '../../lib/url';
+import { loadSpecials, campaigns, fmtRange } from '../../lib/specials';
+
+export function getStaticPaths() {
+  return campaigns(loadSpecials()).map(c => ({ params: { week: c.slug }, props: { c } }));
+}
+const { c } = Astro.props;
+const label = c.status === 'live' ? 'On now' : c.status === 'scheduled' ? 'Coming up' : 'Finished';
+---
+<Base title={`${c.name} specials`} description={`Market Europa Moorabbin specials for ${fmtRange(c.start, c.end)}.`} current="/specials" noindex={c.status !== 'live'}>
+  <div class="wrap section">
+    <span class="eyebrow">{label}</span>
+    <h1>{c.name}</h1>
+    <p>{fmtRange(c.start, c.end)} · {c.items.length} offers · <a href={u('/specials')}>Back to this week's specials</a></p>
+    {c.status === 'expired' && <div class="notice">These specials have finished. See <a href={u('/specials')}>this week's specials</a>.</div>}
+    <div class="cards">{c.items.map(s => <SpecialCard s={s} showDates />)}</div>
+  </div>
+</Base>

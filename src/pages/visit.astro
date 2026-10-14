@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import HoursTable from '../components/HoursTable.astro';
+import site from '../data/site.json';
+import { u } from '../lib/url';
+---
+<Base title="Visit: hours, parking and directions" description={`Market Europa Moorabbin is at ${site.address.line1}, ${site.address.centre}, ${site.address.locality} ${site.address.postcode}. Open 7 days. Free parking.`} current="/visit">
+  <div class="wrap section split">
+    <div>
+      <span class="eyebrow">Visit</span>
+      <h1>Find us</h1>
+      <p><strong>{site.name}</strong><br>{site.address.line1}<br>{site.address.centre}<br>{site.address.locality} {site.address.region} {site.address.postcode}</p>
+      <p><a class="btn" href={site.mapsUrl} rel="noopener">Get directions</a> <a class="btn ghost" href={site.phoneHref}>Call {site.phone}</a></p>
+      <h2 style="margin-top:1.5rem">Parking and transport</h2>
+      <p>Free on-site parking at Moorabbin Super Centre on Warrigal Road, on the Heatherton side of the road between South Road and Kingston Road. [Bus routes and entrance details to be confirmed with the store.]</p>
+      <h2>Public holidays</h2>
+      <p>Public-holiday hours are posted on our Facebook and Instagram and will appear here. [To be confirmed by the store.]</p>
+      <p>Looking for our Noble Park store? <a href={site.sisterStore.url} rel="noopener">{site.sisterStore.name}</a>, {site.sisterStore.address}, {site.sisterStore.phone}.</p>
+    </div>
+    <div>
+      <HoursTable />
+      <h2 style="margin-top:1.5rem">Café</h2>
+      <ul>{site.cafeHours.map(h => <li>{h.day}: {h.open} – {h.close}</li>)}</ul>
+      <p><a href={u('/cafe')}>Café menu</a></p>
+    </div>
+  </div>
+</Base>

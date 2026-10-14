@@ -1,0 +1,25 @@
+---
+import type { Special } from '../lib/specials';
+import { fmtRange } from '../lib/specials';
+interface Props { s: Special; showDates?: boolean }
+const { s, showDates = false } = Astro.props;
+const initials = (s.brand || s.name).split(/\s+/).slice(0, 2).map(w => w[0]?.toUpperCase()).join('');
+const title = s.brand ? `${s.brand} ${s.name}` : s.name;
+---
+<article class={`card${s.liquor ? ' liquor' : ''}`} id={s.id} data-dept={s.department} data-search={`${title} ${s.origin} ${s.department}`.toLowerCase()}>
+  <div class="img">
+    {s.imageUrl ? <img src={s.imageUrl} alt={title} loading="lazy" width="400" height="400" /> : <span class="ph" aria-hidden="true">{initials}</span>}
+  </div>
+  {s.badge && <span class="badge">{s.badge}</span>}
+  <div>
+    <div class="name">{title}</div>
+    <div class="meta">{[s.packSize, s.origin && `Product of ${s.origin}`].filter(Boolean).join(' · ')}</div>
+  </div>
+  <div>
+    <div class="price">{s.priceLabel}{s.priceSuffix && <small>{s.priceSuffix}</small>}</div>
+    {s.regularPrice != null && s.specialPrice != null && s.regularPrice > s.specialPrice && <div class="was">was ${s.regularPrice.toFixed(2)}</div>}
+    {s.unitPrice && <div class="meta">{s.unitPrice}</div>}
+    <div class="dept">{s.department}{s.liquor ? ' · 18+' : ''}</div>
+    {(s.note || showDates) && <div class="note">{[showDates ? fmtRange(s.start, s.end) : '', s.note].filter(Boolean).join(' · ')}</div>}
+  </div>
+</article>

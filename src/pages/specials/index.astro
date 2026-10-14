@@ -1,0 +1,80 @@
+---
+import Base from '../../layouts/Base.astro';
+import SpecialCard from '../../components/SpecialCard.astro';
+import Subscribe from '../../components/Subscribe.astro';
+import site from '../../data/site.json';
+import { u } from '../../lib/url';
+import { loadSpecials, liveSpecials, scheduledSpecials, campaigns, fmtRange } from '../../lib/specials';
+
+const all = loadSpecials();
+const live = liveSpecials(all);
+const liveCampaigns = campaigns(live);
+const next = campaigns(scheduledSpecials(all))[0];
+const past = campaigns(all.filter(s => s.status === 'expired'));
+const depts = [...new Set(live.map(s => s.department))];
+const offers = live.filter(s => !s.liquor && s.specialPrice != null).map(s => ({
+  '@type': 'Product', name: `${s.brand ? s.brand + ' ' : ''}${s.name}`, brand: s.brand || undefined,
+  offers: { '@type': 'Offer', price: s.specialPrice, priceCurrency: 'AUD', availability: 'https://schema.org/InStoreOnly', validFrom: s.start, priceValidUntil: s.end,
+    ...(s.regularPrice ? { priceSpecification: { '@type': 'UnitPriceSpecification', priceType: 'https://schema.org/StrikethroughPrice', price: s.regularPrice, priceCurrency: 'AUD' } } : {}) }
+}));
+const schema = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Market Europa Moorabbin weekly specials', itemListElement: offers.map((o, i) => ({ '@type': 'ListItem', position: i + 1, item: o })) };
+---
+<Base title="This week's specials" description={`Weekly specials at Market Europa Moorabbin: ${live.length} offers across deli, cheese, butcher, seafood, grocery and more. Valid for the dates shown, in store at Heatherton.`} current="/specials" schema={schema}>
+  <div class="wrap section">
+    <span class="eyebrow">Specials</span>
+    <h1>This week's specials</h1>
+    {liveCampaigns.map(c => <p><strong>{c.name}:</strong> {fmtRange(c.start, c.end)} · {c.items.length} offers</p>)}
+    {!live.length && <div class="notice">This week's specials are in store now. {next ? `The next catalogue goes live ${fmtRange(next.start, next.end)}.` : 'The new catalogue goes live on Monday.'}</div>}
+    <p class="form-note">Available at Market Europa Moorabbin only, while stocks last. Prices include GST. Liquor specials are for customers aged 18 and over.</p>
+
+    <div class="search" role="search">
+      <label for="q" class="skip">Search specials</label>
+      <input type="search" id="q" placeholder="Search specials: pecorino, Mutti, oysters…" autocomplete="off">
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="Filter by department">
+      <button type="button" aria-pressed="true" data-dept="">All</button>
+      {depts.map(d => <button type="button" aria-pressed="false" data-dept={d}>{d}</button>)}
+    </div>
+
+    {live.some(s => s.liquor) && <div class="notice liquor" id="liquor-notice" hidden><strong>Liquor specials are for people aged 18 and over.</strong> Available in store only. [Liquor licence number and the Liquor Control Victoria notice to be added once the licence is confirmed.]</div>}
+
+    <div class="cards" id="grid">
+      {live.map(s => <SpecialCard s={s} />)}
+    </div>
+    <p id="empty" class="notice" hidden>No specials match. Try another word or department.</p>
+
+    {next && <div class="panel" style="margin-top:2rem"><span class="eyebrow">Sneak peek</span><h2>Next week: {next.name}</h2><p>{next.items.length} offers from {fmtRange(next.start, next.end)}.</p></div>}
+
+    <p style="margin-top:2rem"><a href={site.sheet.editUrl} rel="noopener" class="form-note">Specials are published from the store's weekly specials sheet (staff only).</a></p>
+    {past.length > 0 && <details><summary>Previous weeks</summary><ul>{past.map(c => <li><a href={u(`/specials/${c.slug}`)}>{c.name} · {fmtRange(c.start, c.end)}</a></li>)}</ul></details>}
+  </div>
+  <Subscribe />
+</Base>
+<script>
+  const q = document.getElementById('q') as HTMLInputElement;
+  const chips = [...document.querySelectorAll<HTMLButtonElement>('#chips button')];
+  const cards = [...document.querySelectorAll<HTMLElement>('#grid .card')];
+  const empty = document.getElementById('empty')!;
+  const liquor = document.getElementById('liquor-notice');
+  let dept = '';
+  const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+  const fuzzy = (hay: string, needle: string) => {
+    if (!needle) return true;
+    if (hay.includes(needle)) return true;
+    // typo tolerance: every word of the query matches with up to one edit against some word of the haystack
+    return needle.split(/\s+/).every(w => hay.split(/[^a-z0-9]+/).some(h => h.startsWith(w) || lev(h, w) <= (w.length > 4 ? 1 : 0)));
+  };
+  const lev = (a: string, b: string) => { const m = a.length, n = b.length; if (Math.abs(m - n) > 1) return 9; const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]); for (let j = 1; j <= n; j++) d[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1)); return d[m][n]; };
+  const apply = () => {
+    const needle = norm(q.value.trim());
+    let shown = 0;
+    for (const c of cards) {
+      const ok = (!dept || c.dataset.dept === dept) && fuzzy(norm(c.dataset.search || ''), needle);
+      c.hidden = !ok; if (ok) shown++;
+    }
+    empty.hidden = shown > 0;
+    if (liquor) liquor.hidden = !(dept === 'Liquor' || (dept === '' && needle && cards.some(c => !c.hidden && c.classList.contains('liquor'))));
+  };
+  q.addEventListener('input', apply);
+  chips.forEach(b => b.addEventListener('click', () => { dept = b.dataset.dept || ''; chips.forEach(x => x.setAttribute('aria-pressed', String(x === b))); apply(); }));
+</script>

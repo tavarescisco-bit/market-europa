@@ -1,0 +1,45 @@
+campaign,start_date,end_date,store,department,product_name,brand,pack_size,qty_value,qty_unit,regular_price,special_price,multibuy,availability_note,is_hero,liquor,origin,image_url,approved,sort_order,notes
+Week 42,2026-10-12,2026-10-18,Moorabbin,Deli & Smallgoods,Leg ham,La Rustica,per kg,1,kg,,21.99,,While stocks last,TRUE,FALSE,,,TRUE,1,Seeded from 12–18 Oct Canva artwork – verify before publishing
+Week 42,2026-10-12,2026-10-18,Moorabbin,Deli & Smallgoods,"Turkey, oven-roasted / chilli / smoked",,per kg,1,kg,,34.99,,,FALSE,FALSE,,,TRUE,2,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Butcher,Oyster blade steak,,per kg,1,kg,,22.99,,,FALSE,FALSE,,,TRUE,3,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Butcher,Chicken tenderloins,,per kg,1,kg,,7.99,,,FALSE,FALSE,,,TRUE,4,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Butcher,"Traditional chevapi, beef or pork & beef",,per kg,1,kg,,19.99,,,TRUE,FALSE,,,TRUE,5,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Grocery & Imports,Potato gnocchi,La Molisana,500 g,500,g,,,3 for $4,,FALSE,FALSE,Italy,,TRUE,6,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Grocery & Imports,Pasta varieties,La Fabbrica,500 g,500,g,,5.99,,,FALSE,FALSE,Italy,,TRUE,7,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Grocery & Imports,Polpa finely chopped tomatoes,Mutti,400 g,400,g,,1.99,,,FALSE,FALSE,Italy,,TRUE,8,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Grocery & Imports,Pasta sauce varieties,Fragassi,500 g,500,g,,5.99,,,TRUE,FALSE,Italy,,TRUE,9,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Grocery & Imports,Raw Australian honey squeeze bottle,Robinsons,500 g,500,g,,5.99,,,FALSE,FALSE,Australia,,TRUE,10,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Grocery & Imports,Espresso crema coffee beans,Kimbo,1 kg,1,kg,,29.99,,,FALSE,FALSE,Italy,,TRUE,11,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Grocery & Imports,Dates,Bestalla,,,,,7.99,,,FALSE,FALSE,,,TRUE,12,Pack size to confirm
+Week 42,2026-10-12,2026-10-18,Moorabbin,Grocery & Imports,Traditional Italian crostoli,La Fornaia,375 g,375,g,,7.99,,,FALSE,FALSE,Italy,,TRUE,13,Price to confirm
+Week 42,2026-10-12,2026-10-18,Moorabbin,Grocery & Imports,Australian roasted & salted pistachios,Yummy Snack,per kg,1,kg,,39.99,,,FALSE,FALSE,Australia,,TRUE,14,Price to confirm
+Week 42,2026-10-12,2026-10-18,Moorabbin,Cheese,Le Gruyère,,per kg,1,kg,,39.99,,,TRUE,FALSE,Switzerland,,TRUE,15,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Cheese,Jarlsberg block,Jarlsberg,500 g,500,g,,8.99,,,FALSE,FALSE,Norway,,TRUE,16,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Cheese,Jarlsberg sliced,Jarlsberg,150 g,150,g,,3.99,,,FALSE,FALSE,Norway,,TRUE,17,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Cheese,Fresh pecorino,Pantalica,per kg,1,kg,,22.99,,,FALSE,FALSE,,,TRUE,18,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Cheese,Tasty cheddar,Warrnambool,per kg,1,kg,,14.99,,,FALSE,FALSE,Australia,,TRUE,19,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Cheese,Danish Fontina,,per kg,1,kg,,29.99,,,FALSE,FALSE,Denmark,,TRUE,20,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Cheese,Smoked cheese,,per kg,1,kg,,19.99,,,FALSE,FALSE,,,TRUE,21,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Cheese,Saganaki,Tempi,150 g,150,g,,3.99,,,FALSE,FALSE,,,TRUE,22,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Liquor,La Bastarda Pinot Grigio,La Bastarda,750 mL,750,mL,,19.99,,,TRUE,TRUE,Italy,,TRUE,23,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Liquor,Ponte Vecchio Chianti,Ponte Vecchio,750 mL,750,mL,,19.99,,,FALSE,TRUE,Italy,,TRUE,24,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Liquor,Luigi Cavalli Red Lambrusco,Luigi Cavalli,750 mL,750,mL,,9.99,,,FALSE,TRUE,Italy,,TRUE,25,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Liquor,Ponte Vecchio Toscana Sangiovese,Ponte Vecchio,750 mL,750,mL,,12.99,,,FALSE,TRUE,Italy,,TRUE,26,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Liquor,Lazzaroni Amaretto,Lazzaroni,700 mL,700,mL,,49.99,,,FALSE,TRUE,Italy,,TRUE,27,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Liquor,Frangelico liqueur,Frangelico,700 mL,700,mL,,42.99,,,FALSE,TRUE,Italy,,TRUE,28,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Liquor,Lazzaroni Limoncino,Lazzaroni,700 mL,700,mL,,54.99,,,FALSE,TRUE,Italy,,TRUE,29,
+Week 42,2026-10-12,2026-10-18,Moorabbin,Liquor,Il Bastardo Sangiovese di Toscana,Il Bastardo,750 mL,750,mL,,19.99,,,FALSE,TRUE,Italy,,TRUE,30,
+Seafood to Wed 14 Oct,2026-10-08,2026-10-14,Moorabbin,Seafood,Fresh Tasmanian oysters,,per dozen,1,dozen,,16.99,,Limited stock,TRUE,FALSE,Australia,,TRUE,1,Seeded from seafood artwork – verify
+Seafood to Wed 14 Oct,2026-10-08,2026-10-14,Moorabbin,Seafood,"Atlantic salmon fillets, sashimi quality",,per kg,1,kg,,34.99,,,FALSE,FALSE,Australia,,TRUE,2,Price to confirm
+Seafood to Wed 14 Oct,2026-10-08,2026-10-14,Moorabbin,Seafood,Lakes Entrance whitebait,,per kg,1,kg,,16.99,,,FALSE,FALSE,Australia,,TRUE,3,
+Seafood to Wed 14 Oct,2026-10-08,2026-10-14,Moorabbin,Seafood,Whole cooked tiger prawns,,per kg,1,kg,,39.99,,,FALSE,FALSE,Australia,,TRUE,4,
+Seafood to Wed 14 Oct,2026-10-08,2026-10-14,Moorabbin,Seafood,Gummy flake fillets,,per kg,1,kg,,39.99,,,FALSE,FALSE,Australia,,TRUE,5,Price to confirm
+Seafood to Wed 14 Oct,2026-10-08,2026-10-14,Moorabbin,Seafood,Mount Martha black mussels,,per kg,1,kg,,5.99,,,FALSE,FALSE,Australia,,TRUE,6,
+Seafood to Wed 14 Oct,2026-10-08,2026-10-14,Moorabbin,Seafood,Australian wild-caught whole sardines,,per kg,1,kg,,9.99,,,FALSE,FALSE,Australia,,TRUE,7,
+Fruit & Veg to Sun 11 Oct,2026-10-05,2026-10-11,Moorabbin,Fruit & Veg,Mandarins,,bag,1,bag,,1.49,,,FALSE,FALSE,Australia,,TRUE,1,Expired example – shows automatic removal
+Fruit & Veg to Sun 11 Oct,2026-10-05,2026-10-11,Moorabbin,Fruit & Veg,Avocados,,each,1,each,,,2 for $3,,FALSE,FALSE,Australia,,TRUE,2,
+Fruit & Veg to Sun 11 Oct,2026-10-05,2026-10-11,Moorabbin,Fruit & Veg,Lebanese cucumbers,,per kg,1,kg,,2.99,,,FALSE,FALSE,Australia,,TRUE,3,
+Fruit & Veg to Sun 11 Oct,2026-10-05,2026-10-11,Moorabbin,Fruit & Veg,Tomatoes,,per kg,1,kg,,2.99,,,FALSE,FALSE,Australia,,TRUE,4,
+Fruit & Veg to Sun 11 Oct,2026-10-05,2026-10-11,Moorabbin,Fruit & Veg,Red capsicums,,per kg,1,kg,,2.99,,,FALSE,FALSE,Australia,,TRUE,5,
+Fruit & Veg to Sun 11 Oct,2026-10-05,2026-10-11,Moorabbin,Fruit & Veg,Sweet potatoes,,per kg,1,kg,,1.99,,,FALSE,FALSE,Australia,,TRUE,6,
+Fruit & Veg to Sun 11 Oct,2026-10-05,2026-10-11,Moorabbin,Fruit & Veg,Rockmelons & honeydews,,each,1,each,,2.99,,,FALSE,FALSE,Australia,,TRUE,7,

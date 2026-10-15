@@ -12,6 +12,7 @@ const endpoint = import.meta.env.PUBLIC_ENQUIRY_URL || '';
         <p class="lede">Tell us what you're planning and the deli team will come back to you with what we can do: antipasto and cheese platters, cakes and pastries, fresh pasta and sauces for a crowd.</p>
         <p>Or call <a href={store.phoneHref} data-event="call_click">{store.phone}</a> during store hours.</p>
       </div>
+      {endpoint ? (
       <form class="stack" id="enquiry" method="post" action={endpoint || '#'} data-live={endpoint ? 'true' : 'false'} novalidate>
         <label for="enq-name">Your name<input name="name" id="enq-name" required autocomplete="name"></label>
         <label for="enq-phone">Phone<input name="phone" id="enq-phone" type="tel" required autocomplete="tel" inputmode="tel"></label>
@@ -23,10 +24,13 @@ const endpoint = import.meta.env.PUBLIC_ENQUIRY_URL || '';
         <button class="btn btn-primary" type="submit">Send enquiry</button>
         <p class="form-note" id="enq-status">We use your details only to answer this enquiry.</p>
       </form>
+      ) : (
+      <div class="panel"><span class="eyebrow">How to order</span><p>Platters and catering are arranged in store or by phone for now. <a href={store.phoneHref} data-event="call_click">Call {store.phone}</a> during store hours, or speak to the deli team at the counter.</p></div>
+      )}
     </div>
   </section>
 </Base>
 <script>
   const f = document.getElementById('enquiry') as HTMLFormElement | null; const st = document.getElementById('enq-status');
-  f?.addEventListener('submit', (e) => { if (!f.checkValidity()) { e.preventDefault(); f.reportValidity(); return; } if (f.dataset.live !== 'true') { e.preventDefault(); if (st) st.textContent = 'Enquiries are not switched on yet. Nothing was sent. Please call the store.'; } });
+  f?.addEventListener('submit', (e) => { if (!f.checkValidity()) { e.preventDefault(); f.reportValidity(); return; } });
 </script>

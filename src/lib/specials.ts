@@ -147,3 +147,6 @@ export function fmtRange(start: string, end: string): string {
 
 /** Department sheet names -> site department slugs */
 export function deptSlugFor(sheetName: string): string | null { return departmentForSheetName(sheetName)?.slug ?? null; }
+
+/** Brand + product name, without repeating a brand already in the name (e.g. 'Jarlsberg block'). */
+export function fullName(s: { brand: string; name: string }): string { return s.brand && !s.name.toLowerCase().startsWith(s.brand.toLowerCase()) ? `${s.brand} ${s.name}` : s.name; }

@@ -14,7 +14,7 @@ const hasRanges = x.ranges.some((r) => r.items.length > 0);
         <p class="lede">{x.intro}</p>
         {x.cutoffDate && <p><strong>Orders close {fmtDate(x.cutoffDate, { weekday: 'long', day: 'numeric', month: 'long' })}.</strong></p>}
         {x.pickupDates.length > 0 && <p>Pickup: {x.pickupDates.map((d: string) => fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })).join(', ')}.</p>}
-        <p>No payment online: pay when you collect. We'll email a confirmation, and the counter will have your order ready.</p>
+        <p>{endpoint ? "No payment online: pay when you collect. We'll email a confirmation, and the counter will have your order ready." : "No payment online: pay when you collect."}</p>
       </div>
       {x.image && <img src={x.image} alt="Christmas table from Market Europa" width="900" height="675" loading="eager" decoding="async" style="border-radius:10px" />}
     </div>
@@ -38,9 +38,10 @@ const hasRanges = x.ranges.some((r) => r.items.length > 0);
   <section class="section">
     <div class="container split">
       <div>
-        <h2>Pre-order form</h2>
-        <p>Tell us what you'd like and when you'll collect. We'll confirm by email within one business day.</p>
+        <h2>{endpoint ? 'Pre-order form' : 'How to pre-order'}</h2>
+        <p>{endpoint ? "Tell us what you'd like and when you'll collect. We'll confirm by email within one business day." : "Tell the counter what you'd like and when you'll collect, and pay when you pick up."}</p>
       </div>
+      {endpoint ? (
       <form class="stack" id="xmas-form" method="post" action={endpoint || '#'} data-live={endpoint ? 'true' : 'false'} novalidate>
         <label for="x-name">Your name<input id="x-name" name="name" required autocomplete="name"></label>
         <label for="x-phone">Mobile<input id="x-phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel"></label>
@@ -56,6 +57,9 @@ const hasRanges = x.ranges.some((r) => r.items.length > 0);
         <button class="btn btn-primary" type="submit" data-event="christmas_order_submit">Send pre-order</button>
         <p class="form-note" id="x-status">We use your details only to prepare and confirm this order.</p>
       </form>
+      ) : (
+      <div class="panel"><span class="eyebrow">How to order</span><p>Christmas pre-orders are taken at the counter or by phone. <a href={store.phoneHref} data-event="call_click">Call {store.phone}</a> during store hours.</p></div>
+      )}
     </div>
   </section>
 </Base>
@@ -64,6 +68,5 @@ const hasRanges = x.ranges.some((r) => r.items.length > 0);
   const f = document.getElementById('xmas-form') as HTMLFormElement | null; const st = document.getElementById('x-status');
   f?.addEventListener('submit', (e) => {
     if (!f.checkValidity()) { e.preventDefault(); f.reportValidity(); return; }
-    if (f.dataset.live !== 'true') { e.preventDefault(); if (st) st.textContent = 'Pre-orders are not switched on yet. Nothing was sent. Please call the store.'; }
   });
 </script>

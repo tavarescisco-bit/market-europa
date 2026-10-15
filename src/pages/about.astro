@@ -13,9 +13,10 @@ import { u } from '../lib/url';
         {store.familyStory ? <p>{store.familyStory}</p> : <p>We are members of A Better Choice, the independent fresh-food retailers' program.</p>}
         <p><a class="btn btn-bottle" href={u('/visit')}>Plan your visit</a></p>
       </div>
-      <div class="panel" aria-label="Then and now">
-        <span class="eyebrow">Then and now</span>
-        <p class="muted">Photographs from the family archive and the store today will sit here, with a short oral-history video from the family.</p>
+      <div class="panel">
+        <span class="eyebrow">Find us</span>
+        <p><strong>{store.name}</strong><br>{store.address.line1}, {store.address.centre}<br>{store.address.locality} {store.address.region} {store.address.postcode}</p>
+        <p><a href={store.phoneHref} data-event="call_click">Call {store.phone}</a></p>
       </div>
     </div>
   </section>

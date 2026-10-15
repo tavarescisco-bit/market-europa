@@ -25,7 +25,7 @@ const menuSchema = { '@context': 'https://schema.org', '@type': 'Menu', name: `$
         ))}
       </div>
       <p style="margin-top:32px">{cafe.displayWindow}</p>
-      <div class="notice">{cafe.allergenNote}</div>
+      <div class="notice">{cafe.allergenNote}{cafe.menuNote && <> {cafe.menuNote}</>}</div>
     </div>
   </section>
 </Base>

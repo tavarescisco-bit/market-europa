@@ -1,16 +1,16 @@
 ---
+import { u } from '../lib/url';
 import type { Special } from '../lib/specials';
-import { fmtRange } from '../lib/specials';
+import { fmtRange, fullName } from '../lib/specials';
 interface Props { s: Special; showDates?: boolean; listable?: boolean }
 const { s, showDates = false, listable = false } = Astro.props;
-const title = s.brand ? `${s.brand} ${s.name}` : s.name;
-const initials = (s.brand || s.name).split(/\s+/).slice(0, 2).map((w) => w[0]?.toUpperCase()).join('');
+const title = fullName(s);
 const amount = s.multibuy ? s.multibuy : s.priceLabel;
 const [whole, cents] = (!s.multibuy && s.specialPrice != null) ? s.specialPrice.toFixed(2).split('.') : ['', ''];
 ---
 <article class="card" id={s.id} data-dept={s.department} data-price={s.specialPrice ?? ''} data-search={`${title} ${s.origin} ${s.department}`.toLowerCase()}>
   <div class="photo">
-    {s.imageUrl ? <img src={s.imageUrl} alt={`${title}${s.packSize ? ', ' + s.packSize : ''}`} loading="lazy" decoding="async" width="600" height="600" /> : <span class="initials" aria-hidden="true">{initials}</span>}
+    {s.imageUrl ? <img src={s.imageUrl} alt={`${title}${s.packSize ? ', ' + s.packSize : ''}`} loading="lazy" decoding="async" width="600" height="600" /> : <img class="watermark" src={u('/brand/mark.png')} alt="" width="800" height="334" loading="lazy" decoding="async" aria-hidden="true" />}
     <div class="ticket" aria-label={`${amount} ${s.priceSuffix}`.trim()}>
       <span class="amount">{whole ? <>${whole}<small>.{cents}</small></> : amount}</span>
       {s.priceSuffix && <span class="per">{s.priceSuffix === '/kg' ? 'per kg' : s.priceSuffix === '/dozen' ? 'per dozen' : s.priceSuffix}</span>}

@@ -9,6 +9,7 @@ const legal = store.legalName ? `${store.legalName}${store.abn ? ', ABN ' + stor
   <span class="eyebrow">Specials in your inbox</span>
   <h2>Get the specials every Monday</h2>
   <p>One email a week with the new specials. Add your mobile if you'd like a text on Thursdays when the seafood lands. Unsubscribe any time.</p>
+  {endpoint ? (
   <form class="stack" id="subscribe-form" method="post" action={endpoint || '#'} data-live={endpoint ? 'true' : 'false'} novalidate>
     <label for="sub-email">Email<input type="email" name="email" id="sub-email" autocomplete="email" required aria-describedby="sub-email-err"><span class="error" id="sub-email-err" hidden>Enter an email address like name@example.com.</span></label>
     <label for="sub-mobile">Mobile (optional, for seafood texts)<input type="tel" name="mobile" id="sub-mobile" autocomplete="tel" inputmode="tel" pattern="[0-9 +]{8,16}"></label>
@@ -17,6 +18,9 @@ const legal = store.legalName ? `${store.legalName}${store.abn ? ', ABN ' + stor
     <button class="btn btn-bottle" type="submit" data-event="signup_email">Subscribe</button>
     <p class="form-note" id="sub-status">Sent by {legal}. Every message includes an unsubscribe link. We use your details only for the specials you asked for.</p>
   </form>
+  ) : (
+  <p class="notice">Email sign-up is on its way. Until then, ask at the counter or <a href={store.phoneHref} data-event="call_click">call {store.phone}</a> to hear what's on special this week.</p>
+  )}
 </div>
 <script>
   const f = document.getElementById('subscribe-form') as HTMLFormElement | null;
@@ -26,6 +30,5 @@ const legal = store.legalName ? `${store.legalName}${store.abn ? ', ABN ' + stor
     if (emailErr) emailErr.hidden = ok; email.setAttribute('aria-invalid', String(!ok));
     if (!ok) { e.preventDefault(); email.focus(); return; }
     if ((f.elements.namedItem('consent_sms') as HTMLInputElement)?.checked) window.dispatchEvent(new CustomEvent('me:event', { detail: { name: 'signup_sms' } }));
-    if (f.dataset.live !== 'true') { e.preventDefault(); if (st) st.textContent = 'Subscriptions are not switched on yet. Nothing was sent.'; }
   });
 </script>

@@ -1,0 +1,17 @@
+---
+import { letterboardLive, fmtTime } from '../lib/content';
+const lb = letterboardLive();
+---
+{lb && (
+  <section class="section" aria-labelledby="lb-title">
+    <div class="container">
+      <div class="letterboard">
+        <div class="lb-head">
+          <span class="eyebrow" id="lb-title">Today at the counter</span>
+          <small>Updated {fmtTime(lb.updatedAt)}</small>
+        </div>
+        <ul>{lb.lines.slice(0, 5).map((l: string) => <li>{l}</li>)}</ul>
+      </div>
+    </div>
+  </section>
+)}

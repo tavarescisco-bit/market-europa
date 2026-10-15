@@ -1,0 +1,40 @@
+---
+import { store } from '../lib/content';
+const reels = (store.reels as { src: string; poster?: string; caption?: string }[]).slice(0, 3);
+---
+{reels.length > 0 && (
+  <section class="section band-paper" aria-labelledby="reels-title">
+    <div class="container">
+      <div class="section-head">
+        <div><span class="eyebrow">From the counters</span><h2 id="reels-title">Made here, landed here</h2></div>
+        <p class="muted">Tap a clip to play with sound.</p>
+      </div>
+      <div class="reels">
+        {reels.map((r, i) => (
+          <div class="reel">
+            <video preload="none" playsinline poster={r.poster || undefined} data-reel={i} aria-label={r.caption || `Clip ${i + 1}`}>
+              <source src={r.src} type="video/mp4" />
+            </video>
+            <button type="button" data-reel-play={i} aria-label={`Play clip: ${r.caption || i + 1}`}>
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+            </button>
+            {r.caption && <span class="cap">{r.caption}</span>}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+<script>
+  document.querySelectorAll<HTMLButtonElement>('[data-reel-play]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const i = btn.dataset.reelPlay; const v = document.querySelector<HTMLVideoElement>(`video[data-reel="${i}"]`);
+      if (!v) return;
+      document.querySelectorAll<HTMLVideoElement>('video[data-reel]').forEach((o) => { if (o !== v) { o.pause(); o.controls = false; } });
+      document.querySelectorAll<HTMLButtonElement>('[data-reel-play]').forEach((o) => { o.hidden = false; });
+      v.muted = false; v.controls = true; v.play(); btn.hidden = true;
+      window.dispatchEvent(new CustomEvent('me:event', { detail: { name: 'video_play', where: `reel_${i}` } }));
+      v.addEventListener('ended', () => { btn.hidden = false; v.controls = false; }, { once: true });
+    });
+  });
+</script>

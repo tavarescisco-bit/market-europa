@@ -1,2 +1,4 @@
 User-agent: *
 Allow: /
+Disallow: /launch-checklist/
+Sitemap: https://marketeuropa.com.au/sitemap.xml

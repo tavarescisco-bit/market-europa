@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import { drops, fmtDate } from '../lib/content';
+import { u } from '../lib/url';
+const cur: any = drops.current; const past: any[] = drops.past;
+---
+<Base title="Gnocchi drop" description="This month's limited handmade gnocchi collaboration at Market Europa Moorabbin, and past drops." current="/gnocchi-drop">
+  <section class="section">
+    <div class="container split">
+      <div>
+        <span class="eyebrow">Limited collaboration</span>
+        <h1>Gnocchi drop</h1>
+        <p class="lede">Each month Antonio's bench makes one gnocchi you can't get any other time, with a guest producer or a seasonal ingredient. When it's gone, it's gone.</p>
+        {cur ? (
+          <div class="panel"><h2>{cur.name}</h2>{cur.partner && <p class="muted">with {cur.partner}</p>}<p>{cur.description}</p>{(cur.from || cur.to) && <p><strong>{[cur.from && fmtDate(cur.from), cur.to && fmtDate(cur.to)].filter(Boolean).join(' – ')}</strong></p>}{cur.price && <p class="price" style="font-family:var(--font-price);font-size:2rem;color:var(--pomodoro)">${cur.price}{cur.priceUnit ? ' ' + cur.priceUnit : ''}</p>}</div>
+        ) : (
+          <p class="notice">The next drop is being made. Follow the specials email for the announcement.</p>
+        )}
+      </div>
+      {cur?.image && <img src={cur.image} alt={cur.name} width="900" height="675" loading="eager" decoding="async" style="border-radius:10px" />}
+    </div>
+  </section>
+  {past.length > 0 && (
+    <section class="section band-paper"><div class="container"><h2>Past drops</h2><div class="grid" style="margin-top:24px">{past.map((p: any) => <article class="card"><div class="photo">{p.image && <img src={p.image} alt={p.name} loading="lazy" decoding="async" width="600" height="600" />}</div><div class="body"><div class="name">{p.name}</div><div class="meta">{[p.partner, p.from && fmtDate(p.from, { month: 'long', year: 'numeric' })].filter(Boolean).join(' · ')}</div></div><div class="foot"></div></article>)}</div></div></section>
+  )}
+  <section class="section"><div class="container"><p><a href={u('/departments/fresh-pasta')}>Fresh pasta and ready meals, every day</a></p></div></section>
+</Base>

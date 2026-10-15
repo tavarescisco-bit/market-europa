@@ -1,0 +1,39 @@
+{
+  "name": "Market Europa Café",
+  "subtitle": "Antonio's fresh gnocchi bar",
+  "intro": "Breakfast, panini, handmade gnocchi from Antonio's fresh gnocchi bar, and proper coffee. Order and pay at the front counter; no bookings needed.",
+  "pricesConfirmed": false,
+  "displayWindow": "Assorted panini, salads, pizzas, hand-stretched bureks, arancini and spanakopita from the display window.",
+  "allergenNote": "Ask our team about allergens. Dishes may contain or come into contact with gluten, dairy, egg, nuts, sesame and fish.",
+  "sections": [
+    { "title": "Antonio's fresh gnocchi bar", "items": [
+      { "name": "Antonio special", "desc": "Roasted pumpkin cream sauce with garlic, sage and Parmesan", "price": "14.90", "takeHome": ["fresh-pasta", "deli-and-cheese"] },
+      { "name": "Carbonara", "desc": "Classic Roman gnocchi alla carbonara with soft potato gnocchi", "price": "14.90", "takeHome": ["fresh-pasta", "deli-and-cheese"] },
+      { "name": "Casalinga pomodoro", "desc": "Chunky tomato concassé, garlic, onion and basil", "price": "14.90", "takeHome": ["fresh-pasta", "fruit-and-veg", "grocery"] },
+      { "name": "Truffle", "desc": "Fresh truffle shavings, truffle oil and truffle-infused cream", "price": "16.90", "takeHome": ["fresh-pasta", "grocery"] },
+      { "name": "Ragù di agnello", "desc": "Slow-cooked lamb ragù, rustic and deeply flavoured", "price": "16.90", "takeHome": ["fresh-pasta", "butcher"] },
+      { "name": "Bolognese", "desc": "Slow-cooked beef and tomato Bolognese", "price": "14.90", "takeHome": ["fresh-pasta", "butcher", "grocery"] },
+      { "name": "Broccoli pesto", "desc": "Gnocchi tossed in a creamy broccoli pesto", "price": "14.90", "takeHome": ["fresh-pasta", "fruit-and-veg"] }
+    ]},
+    { "title": "All-day breakfast", "items": [
+      { "name": "Sourdough toast", "desc": "Toasted until golden; add Vegemite, jam, honey or peanut butter", "price": "6.50", "takeHome": ["bakery", "grocery"] },
+      { "name": "Zucchini fritters with sliced avocado", "desc": "Crispy fritters, avocado, feta and beetroot hommus", "price": "17.50", "takeHome": ["fruit-and-veg", "deli-and-cheese"] },
+      { "name": "Eggs Benedict", "desc": "Poached eggs, hollandaise and smoked Virginian ham on sourdough", "price": "18.50", "takeHome": ["deli-and-cheese", "bakery"] },
+      { "name": "Chilli scrambled", "desc": "Scrambled eggs with chorizo, Spanish onion, feta and herbs on sourdough", "price": "17.50", "takeHome": ["deli-and-cheese", "bakery"] },
+      { "name": "Free-range eggs your way", "desc": "Fried, scrambled or poached", "price": "13.50", "takeHome": ["grocery", "bakery"] }
+    ]},
+    { "title": "Lunch", "items": [
+      { "name": "Nonna's chicken cotoletta panino", "desc": "Parmesan-herb crusted schnitzel, cos, tomato and provolone in ciabatta", "price": "14.90", "takeHome": ["butcher", "deli-and-cheese", "bakery"] },
+      { "name": "Europa scotch fillet steak panino", "desc": "Scotch fillet, tomato, cos, garlic aioli, Asiago and relish", "price": "14.90", "takeHome": ["butcher", "deli-and-cheese", "bakery"] },
+      { "name": "Open lamb shoulder souvlaki", "desc": "Marinated lamb on warm pita with Greek salad, chips and tzatziki", "price": "17.90", "takeHome": ["butcher", "deli-and-cheese"] },
+      { "name": "Spicy Italian pork sausage panino", "desc": "Grilled sausage with pipi e patate, roast peppers and olive oil", "price": "13.90", "takeHome": ["butcher", "fruit-and-veg", "bakery"] },
+      { "name": "Bowl of chips", "desc": "Crispy golden chips, salted", "price": "6.90", "takeHome": [] }
+    ]},
+    { "title": "Drinks", "items": [
+      { "name": "Cappuccino, latte, long black, macchiato, hot chocolate", "desc": "", "price": "5.00", "takeHome": ["grocery"] },
+      { "name": "Iced coffee, iced mocha, café crema", "desc": "", "price": "6.00", "takeHome": ["grocery"] },
+      { "name": "Milkshakes", "desc": "Vanilla, hazelnut, caramel", "price": "6.00", "takeHome": [] },
+      { "name": "Affogato", "desc": "", "price": "9.00", "takeHome": ["grocery"] }
+    ]}
+  ]
+}

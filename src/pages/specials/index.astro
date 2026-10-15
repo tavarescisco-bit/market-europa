@@ -2,7 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import SpecialCard from '../../components/SpecialCard.astro';
 import Subscribe from '../../components/Subscribe.astro';
-import site from '../../data/site.json';
+import { store } from '../../lib/content';
 import { u } from '../../lib/url';
 import { loadSpecials, liveSpecials, scheduledSpecials, campaigns, fmtRange } from '../../lib/specials';
 
@@ -10,71 +10,85 @@ const all = loadSpecials();
 const live = liveSpecials(all);
 const liveCampaigns = campaigns(live);
 const next = campaigns(scheduledSpecials(all))[0];
-const past = campaigns(all.filter(s => s.status === 'expired'));
-const depts = [...new Set(live.map(s => s.department))];
-const offers = live.filter(s => !s.liquor && s.specialPrice != null).map(s => ({
-  '@type': 'Product', name: `${s.brand ? s.brand + ' ' : ''}${s.name}`, brand: s.brand || undefined,
-  offers: { '@type': 'Offer', price: s.specialPrice, priceCurrency: 'AUD', availability: 'https://schema.org/InStoreOnly', validFrom: s.start, priceValidUntil: s.end,
-    ...(s.regularPrice ? { priceSpecification: { '@type': 'UnitPriceSpecification', priceType: 'https://schema.org/StrikethroughPrice', price: s.regularPrice, priceCurrency: 'AUD' } } : {}) }
-}));
-const schema = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Market Europa Moorabbin weekly specials', itemListElement: offers.map((o, i) => ({ '@type': 'ListItem', position: i + 1, item: o })) };
+const past = campaigns(all.filter((s) => s.status === 'expired'));
+const depts = [...new Set(live.map((s) => s.department))];
+const schema = { '@context': 'https://schema.org', '@type': 'ItemList', name: 'Market Europa Moorabbin weekly specials', itemListElement: live.filter((s) => !s.liquor && s.specialPrice != null).map((s, i) => ({ '@type': 'ListItem', position: i + 1, item: { '@type': 'Product', name: `${s.brand ? s.brand + ' ' : ''}${s.name}`, brand: s.brand || undefined, offers: { '@type': 'Offer', price: s.specialPrice, priceCurrency: 'AUD', availability: 'https://schema.org/InStoreOnly', validFrom: s.start, priceValidUntil: s.end } } })) };
 ---
-<Base title="This week's specials" description={`Weekly specials at Market Europa Moorabbin: ${live.length} offers across deli, cheese, butcher, seafood, grocery and more. Valid for the dates shown, in store at Heatherton.`} current="/specials" schema={schema}>
-  <div class="wrap section">
-    <span class="eyebrow">Specials</span>
-    <h1>This week's specials</h1>
-    {liveCampaigns.map(c => <p><strong>{c.name}:</strong> {fmtRange(c.start, c.end)} · {c.items.length} offers</p>)}
-    {!live.length && <div class="notice">This week's specials are in store now. {next ? `The next catalogue goes live ${fmtRange(next.start, next.end)}.` : 'The new catalogue goes live on Monday.'}</div>}
-    <p class="form-note">Available at Market Europa Moorabbin only, while stocks last. Prices include GST. Liquor specials are for customers aged 18 and over.</p>
+<Base title="This week's specials" description={`${live.length} weekly specials at Market Europa Moorabbin across deli, cheese, butcher, seafood, pasta, bakery and grocery. Valid for the dates shown, in store at Heatherton.`} current="/specials" schema={schema}>
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Specials</span>
+      <h1>This week's specials</h1>
+      {liveCampaigns.map((c) => <p class="lede"><strong>{c.name}:</strong> {fmtRange(c.start, c.end)} · {c.items.length} offers</p>)}
+      {!live.length && <div class="notice">This week's specials are in store now.{next ? ` The next catalogue runs ${fmtRange(next.start, next.end)}.` : ''}</div>}
+      <p class="form-note">Available at Market Europa Moorabbin only, while stocks last. Prices include GST. Liquor specials are for customers aged 18 and over.</p>
 
-    <div class="search" role="search">
-      <label for="q" class="skip">Search specials</label>
-      <input type="search" id="q" placeholder="Search specials: pecorino, Mutti, oysters…" autocomplete="off">
+      <div class="toolbar" role="search">
+        <label class="visually-hidden" for="q">Search specials</label>
+        <input type="search" id="q" placeholder="Search: pecorino, Mutti, oysters…" autocomplete="off">
+        <label class="visually-hidden" for="sort">Sort</label>
+        <select id="sort"><option value="default">Sort: catalogue order</option><option value="asc">Price: low to high</option><option value="desc">Price: high to low</option></select>
+      </div>
+      <div class="chips" id="chips" role="group" aria-label="Filter by department">
+        <button type="button" aria-pressed="true" data-dept="">All</button>
+        {depts.map((d) => <button type="button" aria-pressed="false" data-dept={d}>{d}</button>)}
+      </div>
+
+      <div class="list-bar" id="list-bar" hidden>
+        <span><strong id="list-count">0</strong> on my list</span>
+        <div class="actions">
+          <a class="btn" id="list-sms" href="#" data-event="list_share">Text it</a>
+          <a class="btn" id="list-wa" href="#" rel="noopener" data-event="list_share">WhatsApp</a>
+          <button class="btn" type="button" id="list-copy" data-event="list_share">Copy</button>
+          <button class="btn" type="button" id="list-clear">Clear</button>
+        </div>
+      </div>
+
+      {live.some((s) => s.liquor) && <div class="notice liquor" id="liquor-notice" hidden style="margin-top:16px"><strong>Liquor specials are for people aged 18 and over.</strong> Available in store only.{store.liquorLicence && <> Liquor licence {store.liquorLicence}.</>}</div>}
+
+      <div class="grid" id="grid" style="margin-top:24px">{live.map((s) => <SpecialCard s={s} listable />)}</div>
+      <p id="empty" class="notice" hidden style="margin-top:16px">No specials match. Try another word or department.</p>
+
+      {next && <div class="panel" style="margin-top:48px"><span class="eyebrow">Sneak peek</span><h2>Next week: {next.name}</h2><p>{next.items.length} offers from {fmtRange(next.start, next.end)}.</p></div>}
+      {past.length > 0 && <details style="margin-top:32px"><summary>Previous weeks</summary><ul>{past.map((c) => <li><a href={u(`/specials/${c.slug}`)}>{c.name} · {fmtRange(c.start, c.end)}</a></li>)}</ul></details>}
     </div>
-    <div class="chips" id="chips" role="group" aria-label="Filter by department">
-      <button type="button" aria-pressed="true" data-dept="">All</button>
-      {depts.map(d => <button type="button" aria-pressed="false" data-dept={d}>{d}</button>)}
-    </div>
-
-    {live.some(s => s.liquor) && <div class="notice liquor" id="liquor-notice" hidden><strong>Liquor specials are for people aged 18 and over.</strong> Available in store only. [Liquor licence number and the Liquor Control Victoria notice to be added once the licence is confirmed.]</div>}
-
-    <div class="cards" id="grid">
-      {live.map(s => <SpecialCard s={s} />)}
-    </div>
-    <p id="empty" class="notice" hidden>No specials match. Try another word or department.</p>
-
-    {next && <div class="panel" style="margin-top:2rem"><span class="eyebrow">Sneak peek</span><h2>Next week: {next.name}</h2><p>{next.items.length} offers from {fmtRange(next.start, next.end)}.</p></div>}
-
-    <p style="margin-top:2rem"><a href={site.sheet.editUrl} rel="noopener" class="form-note">Specials are published from the store's weekly specials sheet (staff only).</a></p>
-    {past.length > 0 && <details><summary>Previous weeks</summary><ul>{past.map(c => <li><a href={u(`/specials/${c.slug}`)}>{c.name} · {fmtRange(c.start, c.end)}</a></li>)}</ul></details>}
-  </div>
-  <Subscribe />
+  </section>
+  <section class="section band-paper"><div class="container"><Subscribe /></div></section>
 </Base>
 <script>
-  const q = document.getElementById('q') as HTMLInputElement;
+  const q = document.getElementById('q') as HTMLInputElement; const sort = document.getElementById('sort') as HTMLSelectElement;
   const chips = [...document.querySelectorAll<HTMLButtonElement>('#chips button')];
-  const cards = [...document.querySelectorAll<HTMLElement>('#grid .card')];
-  const empty = document.getElementById('empty')!;
-  const liquor = document.getElementById('liquor-notice');
+  const grid = document.getElementById('grid')!; const cards = [...grid.querySelectorAll<HTMLElement>('.card')];
+  const empty = document.getElementById('empty')!; const liquor = document.getElementById('liquor-notice');
   let dept = '';
   const norm = (s: string) => s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-  const fuzzy = (hay: string, needle: string) => {
-    if (!needle) return true;
-    if (hay.includes(needle)) return true;
-    // typo tolerance: every word of the query matches with up to one edit against some word of the haystack
-    return needle.split(/\s+/).every(w => hay.split(/[^a-z0-9]+/).some(h => h.startsWith(w) || lev(h, w) <= (w.length > 4 ? 1 : 0)));
-  };
   const lev = (a: string, b: string) => { const m = a.length, n = b.length; if (Math.abs(m - n) > 1) return 9; const d = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]); for (let j = 1; j <= n; j++) d[0][j] = j; for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++) d[i][j] = Math.min(d[i-1][j] + 1, d[i][j-1] + 1, d[i-1][j-1] + (a[i-1] === b[j-1] ? 0 : 1)); return d[m][n]; };
+  const fuzzy = (hay: string, needle: string) => !needle || hay.includes(needle) || needle.split(/\s+/).every((w) => hay.split(/[^a-z0-9]+/).some((h) => h.startsWith(w) || lev(h, w) <= (w.length > 4 ? 1 : 0)));
   const apply = () => {
-    const needle = norm(q.value.trim());
-    let shown = 0;
-    for (const c of cards) {
-      const ok = (!dept || c.dataset.dept === dept) && fuzzy(norm(c.dataset.search || ''), needle);
-      c.hidden = !ok; if (ok) shown++;
-    }
+    const needle = norm(q.value.trim()); let shown = 0;
+    for (const c of cards) { const ok = (!dept || c.dataset.dept === dept) && fuzzy(norm(c.dataset.search || ''), needle); c.hidden = !ok; if (ok) shown++; }
     empty.hidden = shown > 0;
-    if (liquor) liquor.hidden = !(dept === 'Liquor' || (dept === '' && needle && cards.some(c => !c.hidden && c.classList.contains('liquor'))));
+    if (liquor) liquor.hidden = !(dept === 'Liquor' || (dept === '' && !!needle && cards.some((c) => !c.hidden && c.dataset.dept === 'Liquor')));
+    const mode = sort.value; const sorted = [...cards].sort((a, b) => mode === 'default' ? 0 : (Number(a.dataset.price || 9999) - Number(b.dataset.price || 9999)) * (mode === 'asc' ? 1 : -1));
+    if (mode !== 'default') sorted.forEach((c) => grid.appendChild(c)); else cards.forEach((c) => grid.appendChild(c));
   };
-  q.addEventListener('input', apply);
-  chips.forEach(b => b.addEventListener('click', () => { dept = b.dataset.dept || ''; chips.forEach(x => x.setAttribute('aria-pressed', String(x === b))); apply(); }));
+  q.addEventListener('input', apply); sort.addEventListener('change', apply);
+  chips.forEach((b) => b.addEventListener('click', () => { dept = b.dataset.dept || ''; chips.forEach((x) => x.setAttribute('aria-pressed', String(x === b))); apply(); }));
+  window.dispatchEvent(new CustomEvent('me:event', { detail: { name: 'specials_view', count: cards.length } }));
+
+  // "Add to my list": kept in the browser only; shareable by SMS, WhatsApp or copy. No accounts.
+  const KEY = 'me-list'; const bar = document.getElementById('list-bar')!; const count = document.getElementById('list-count')!;
+  let list: Record<string, string> = {}; try { list = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(list)); } catch {} };
+  const render = () => {
+    const ids = Object.keys(list); count.textContent = String(ids.length); bar.hidden = ids.length === 0;
+    document.querySelectorAll<HTMLButtonElement>('[data-list-add]').forEach((b) => { const on = !!list[b.dataset.listAdd!]; b.setAttribute('aria-pressed', String(on)); b.textContent = on ? 'On my list' : 'Add to my list'; });
+    const text = `My Market Europa list:\n${ids.map((i) => '• ' + list[i]).join('\n')}\n${location.origin}${location.pathname}`;
+    (document.getElementById('list-sms') as HTMLAnchorElement).href = 'sms:?&body=' + encodeURIComponent(text);
+    (document.getElementById('list-wa') as HTMLAnchorElement).href = 'https://wa.me/?text=' + encodeURIComponent(text);
+    (document.getElementById('list-copy') as HTMLButtonElement).onclick = async () => { try { await navigator.clipboard.writeText(text); (document.getElementById('list-copy') as HTMLButtonElement).textContent = 'Copied'; } catch { prompt('Copy your list:', text); } };
+  };
+  document.querySelectorAll<HTMLButtonElement>('[data-list-add]').forEach((b) => b.addEventListener('click', () => { const id = b.dataset.listAdd!; if (list[id]) delete list[id]; else list[id] = b.dataset.listLabel || id; save(); render(); }));
+  document.getElementById('list-clear')!.addEventListener('click', () => { list = {}; save(); render(); });
+  render();
 </script>

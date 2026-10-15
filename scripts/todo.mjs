@@ -1,0 +1,27 @@
+// Writes TODO.md from the content files so the unresolved list lives in the repo too.
+import fs from 'node:fs';
+const read = (f) => JSON.parse(fs.readFileSync(f, 'utf8'));
+const store = read('content/store.json'), cafe = read('content/cafe.json'), seasonal = read('content/seasonal.json'), drops = read('content/gnocchi-drops.json'), gazette = read('content/gazette.json');
+const t = [];
+const need = (c, area, item) => c && t.push(`- **${area}:** ${item}`);
+need(!store.foundingYear, 'Story', 'Founding year');
+need(!store.familyStory, 'Story', 'Family story and names');
+need(!store.legalName || !store.abn, 'Legal', 'Legal entity name and ABN');
+need(!store.liquorLicence, 'Legal', 'Liquor licence number and LCV warning notice');
+need(!store.holidayHours.length, 'Hours', 'Public-holiday hours');
+need(!store.transport, 'Visit', 'Public transport notes');
+need(!store.hero.poster || !store.hero.mp4Desktop || !store.hero.mp4Mobile, 'Media', 'Hero poster and video (16:9 and 4:5, MP4 + WebM, ≤3 MB)');
+need(!store.reels.length, 'Media', 'Three 9:16 reels');
+need(store.departments.some((d) => !d.image), 'Media', 'Department photos: ' + store.departments.filter((d) => !d.image).map((d) => d.name).join(', '));
+need(!cafe.pricesConfirmed, 'Café', 'Confirm menu items and prices');
+need(!seasonal.christmas.cutoffDate, 'Christmas', 'Cut-off date');
+need(!seasonal.christmas.pickupDates.length || !seasonal.christmas.pickupSlots.length, 'Christmas', 'Pickup dates and slots');
+need(seasonal.christmas.ranges.every((r) => !r.items.length), 'Christmas', 'Ranges and prices');
+need(!drops.current, 'Gnocchi drop', 'This month\'s collaboration');
+need(!gazette.issues.length, 'Gazette', 'First issue');
+need(!store.analyticsId, 'Analytics', 'GA4 measurement ID');
+t.push('- **Specials:** confirm rows marked "to confirm"; add product cut-out photos (image_url)');
+t.push('- **Forms:** choose forms/email host (Cloudflare Pages Functions recommended) and email provider');
+t.push('- **Brand:** replace interim logo recreation with the client\'s vector files if they exist');
+fs.writeFileSync('TODO.md', `# Launch TODO (generated from content files)\n\nUpdated ${new Date().toISOString().slice(0, 10)}. Items disappear when the content field is filled.\n\n${t.join('\n')}\n`);
+console.log(t.length + ' open items');

@@ -1,15 +1,17 @@
 ---
 import Base from '../../layouts/Base.astro';
-import site from '../../data/site.json';
+import { store } from '../../lib/content';
 import { u } from '../../lib/url';
 ---
 <Base title="Departments" description="Fruit and veg, deli and cheese, butcher, seafood, fresh pasta, bakery, European groceries and liquor at Market Europa Moorabbin." current="/departments">
-  <div class="wrap section">
-    <span class="eyebrow">All under one roof</span>
-    <h1>Departments</h1>
-    <p>Everything a European kitchen needs, from the people who cook with it.</p>
-    <div class="tiles" style="margin-top:1rem">
-      {site.departments.map(d => <a class="tile" href={u(`/departments/${d.slug}`)} style={`background:${d.colour}`}><span class="t">{d.name}</span><span class="s">{d.blurb}</span></a>)}
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">All under one roof</span>
+      <h1>Departments</h1>
+      <p class="lede">Everything a European kitchen needs, from the people who cook with it.</p>
+      <div class="tiles" style="margin-top:32px">
+        {store.departments.map((d) => <a class="tile" href={u(`/departments/${d.slug}`)}>{d.image && <img src={d.image} alt="" loading="lazy" decoding="async" width="600" height="450" />}<span class="t">{d.name}</span><span class="s">{d.blurb}</span></a>)}
+      </div>
     </div>
-  </div>
+  </section>
 </Base>

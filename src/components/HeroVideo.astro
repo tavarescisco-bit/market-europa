@@ -1,0 +1,47 @@
+---
+import { store } from '../lib/content';
+import { u } from '../lib/url';
+const h = store.hero;
+const hasVideo = !!(h.mp4Desktop || h.webmDesktop);
+---
+<section class="hero" aria-labelledby="hero-title">
+  <div class="media" aria-hidden="true">
+    {hasVideo ? (
+      <video id="hero-video" muted autoplay loop playsinline preload="metadata" poster={h.poster || undefined}>
+        {h.webmMobile && <source src={h.webmMobile} type="video/webm" media="(max-width: 699px)" />}
+        {h.mp4Mobile && <source src={h.mp4Mobile} type="video/mp4" media="(max-width: 699px)" />}
+        {h.webmDesktop && <source src={h.webmDesktop} type="video/webm" />}
+        {h.mp4Desktop && <source src={h.mp4Desktop} type="video/mp4" />}
+      </video>
+    ) : h.poster ? (
+      <img src={h.poster} alt="" width="1600" height="900" fetchpriority="high" />
+    ) : (
+      <div class="poster-fallback"></div>
+    )}
+  </div>
+  <div class="container">
+    <p class="eyebrow">{store.eyebrow}</p>
+    <h1 id="hero-title">{store.tagline}</h1>
+    <div class="ctas">
+      <a class="btn btn-primary" href={u('/specials')} data-event="specials_view">See this week's specials</a>
+      <a class="btn btn-light" href={u('/visit')}>Plan your visit</a>
+    </div>
+  </div>
+  {hasVideo && (
+    <button type="button" class="play" id="hero-toggle" aria-label="Pause video" aria-pressed="false">
+      <svg id="hero-icon-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14"/><rect x="14" y="5" width="4" height="14"/></svg>
+      <svg id="hero-icon-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden><path d="M8 5v14l11-7z"/></svg>
+    </button>
+  )}
+</section>
+<script>
+  const v = document.getElementById('hero-video') as HTMLVideoElement | null;
+  const b = document.getElementById('hero-toggle');
+  const ip = document.getElementById('hero-icon-pause'); const ipl = document.getElementById('hero-icon-play');
+  if (v && b) {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const setUI = (playing: boolean) => { b.setAttribute('aria-label', playing ? 'Pause video' : 'Play video'); b.setAttribute('aria-pressed', String(!playing)); if (ip) ip.hidden = !playing; if (ipl) ipl.hidden = playing; };
+    if (reduced) { v.pause(); v.removeAttribute('autoplay'); setUI(false); }
+    b.addEventListener('click', () => { if (v.paused) { v.play(); setUI(true); window.dispatchEvent(new CustomEvent('me:event', { detail: { name: 'video_play', where: 'hero' } })); } else { v.pause(); setUI(false); } });
+  }
+</script>

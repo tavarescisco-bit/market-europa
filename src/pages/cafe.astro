@@ -1,25 +1,31 @@
 ---
 import Base from '../layouts/Base.astro';
-import site from '../data/site.json';
-const cafe = site.cafe;
-const menuSchema = { '@context': 'https://schema.org', '@type': 'Menu', name: `${cafe.name} menu`, hasMenuSection: cafe.sections.map(s => ({ '@type': 'MenuSection', name: s.title, hasMenuItem: s.items.map(i => ({ '@type': 'MenuItem', name: i.name, description: i.desc || undefined, offers: { '@type': 'Offer', price: i.price, priceCurrency: 'AUD' } })) })) };
+import { store, cafe, departmentBySlug } from '../lib/content';
+import { u } from '../lib/url';
+const menuSchema = { '@context': 'https://schema.org', '@type': 'Menu', name: `${cafe.name} menu`, hasMenuSection: cafe.sections.map((s) => ({ '@type': 'MenuSection', name: s.title, hasMenuItem: s.items.map((i) => ({ '@type': 'MenuItem', name: i.name, description: i.desc || undefined, offers: { '@type': 'Offer', price: i.price, priceCurrency: 'AUD' } })) })) };
 ---
-<Base title="Café menu" description="Market Europa Café in Moorabbin: Antonio's fresh gnocchi bar, all-day breakfast, panini, coffee. Open daily until 2:30pm." current="/cafe" schema={menuSchema}>
-  <div class="wrap section">
-    <span class="eyebrow">Café</span>
-    <h1>{cafe.name}</h1>
-    <p>{cafe.intro}</p>
-    <p><strong>Café hours:</strong> {site.cafeHours.map(h => `${h.day} ${h.open} – ${h.close}`).join(' · ')}. Kitchen closes with the café. No bookings; order and pay at the counter.</p>
-    <div class="menu" style="margin-top:1.5rem">
-      {cafe.sections.map(s => (
-        <section>
-          <h3>{s.title}</h3>
-          <dl>{s.items.map(i => <><dt><span>{i.name}</span><span>${i.price}</span></dt>{i.desc && <dd>{i.desc}</dd>}</>)}</dl>
-        </section>
-      ))}
+<Base title="Café menu: Antonio's fresh gnocchi bar" description="Market Europa Café in Moorabbin: Antonio's fresh gnocchi bar, all-day breakfast, panini and proper coffee. Open daily until 2:30pm, order at the counter." current="/cafe" schema={menuSchema}>
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Café</span>
+      <h1>{cafe.subtitle}</h1>
+      <p class="lede">{cafe.intro}</p>
+      <p><strong>Café hours:</strong> {store.cafeHours.map((h) => `${h.days} ${h.open} – ${h.close}`).join(' · ')}. No bookings; order and pay at the counter.</p>
     </div>
-    <p style="margin-top:1.5rem">{cafe.displayWindow}</p>
-    <div class="notice">{cafe.allergenNote}</div>
-    <p class="form-note" style="margin-top:1rem">Menu and prices as published by the café in 2025; to be confirmed by the store before launch.</p>
-  </div>
+  </section>
+  <div class="awning" aria-hidden="true"></div>
+  <section class="section band-paper">
+    <div class="container">
+      <div class="menu">
+        {cafe.sections.map((s) => (
+          <section>
+            <h2 class="menu-title">{s.title}</h2>
+            <dl>{s.items.map((i) => <><dt><span>{i.name}</span><span class="price">${i.price}</span></dt><dd>{i.desc}{i.takeHome?.length > 0 && <span class="take">Take it home: {i.takeHome.map((slug, k) => { const d = departmentBySlug(slug); return d ? <>{k > 0 && ' · '}<a href={u(`/departments/${slug}`)}>{d.name}</a></> : null; })}</span>}</dd></>)}</dl>
+          </section>
+        ))}
+      </div>
+      <p style="margin-top:32px">{cafe.displayWindow}</p>
+      <div class="notice">{cafe.allergenNote}</div>
+    </div>
+  </section>
 </Base>

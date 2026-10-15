@@ -1,0 +1,18 @@
+---
+/* Market Europa lockup rendered from brand/logo-master.html (compact: MARKET / EUROPA + sprig / SUPERMARKET).
+   The PNGs are 800 px wide on a transparent background; the header shows them at 56 px high (40 px on mobile). */
+import { u } from '../lib/url';
+interface Props { variant?: 'compact' | 'compact-white-gold' | 'mark' | 'mark-white-gold'; height?: number; link?: boolean }
+const { variant = 'compact', height = 56, link = true } = Astro.props;
+const src = u(`/brand/${variant === 'compact' ? 'logo-compact.png' : variant === 'compact-white-gold' ? 'logo-compact-white-gold.png' : variant === 'mark' ? 'mark.png' : 'mark-white-gold.png'}`);
+const ratio = variant.startsWith('compact') ? 800 / 398 : 800 / 334;
+const w = Math.round(height * ratio);
+---
+{link ? (
+  <a class="logo" href={u('/')} aria-label="Market Europa Moorabbin, home">
+    <img src={src} alt="Market Europa Supermarket" width={w} height={height} decoding="async" fetchpriority="high" />
+    <span class="word"><small>Moorabbin</small></span>
+  </a>
+) : (
+  <img src={src} alt="Market Europa Supermarket" width={w} height={height} loading="lazy" decoding="async" />
+)}

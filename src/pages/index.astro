@@ -1,44 +1,45 @@
 ---
 import Base from '../layouts/Base.astro';
-import Masthead from '../components/Masthead.astro';
+import HeroVideo from '../components/HeroVideo.astro';
+import Letterboard from '../components/Letterboard.astro';
 import SpecialCard from '../components/SpecialCard.astro';
+import ReelsWall from '../components/ReelsWall.astro';
 import Subscribe from '../components/Subscribe.astro';
-import HoursTable from '../components/HoursTable.astro';
-import site from '../data/site.json';
+import { store, cafe, activeSeasonal, fmtDate } from '../lib/content';
 import { u } from '../lib/url';
-import { loadSpecials, liveSpecials, scheduledSpecials, campaigns } from '../lib/specials';
+import { loadSpecials, liveSpecials, scheduledSpecials, campaigns, fmtRange } from '../lib/specials';
 
 const all = loadSpecials();
 const live = liveSpecials(all);
-const liveCampaigns = campaigns(live);
-const main = liveCampaigns.find(c => c.items.some(i => !i.liquor)) ?? liveCampaigns[0];
+const main = campaigns(live).find((c) => c.items.some((i) => !i.liquor)) ?? campaigns(live)[0];
 const next = scheduledSpecials(all)[0];
-const preview = [...live.filter(i => !i.liquor)].sort((a, b) => Number(b.isHero) - Number(a.isHero) || a.sortOrder - b.sortOrder).slice(0, 8);
-const depts = site.departments;
+const preview = [...live.filter((i) => !i.liquor)].sort((a, b) => Number(b.isHero) - Number(a.isHero) || a.sortOrder - b.sortOrder).slice(0, 8);
+const seasonal = activeSeasonal();
 ---
-<Base title="European supermarket, deli, butcher, seafood and café in Moorabbin" description="Market Europa Moorabbin: family-run continental supermarket with weekly specials, deli and cheese, in-house butcher, fresh seafood, handmade pasta, bakery, European groceries and a café. Shop 5/444 Warrigal Rd, Heatherton." current="/">
-  <div class="wrap" style="padding-top:1rem">
-    <Masthead campaign={main} nextStart={next?.start} />
-  </div>
+<Base title="European supermarket in Moorabbin" description="Market Europa Moorabbin: family-run European supermarket with deli and cheese, in-house butcher, fresh seafood, handmade pasta, bakery, imported groceries, liquor and a café. Weekly specials. Shop 5/444 Warrigal Road, Heatherton." current="/">
+  <HeroVideo />
+  <Letterboard />
 
   <section class="section" aria-labelledby="sp-title">
-    <div class="wrap">
+    <div class="container">
       <div class="section-head">
-        <div><span class="eyebrow">Catalogue layer</span><h2 id="sp-title">This week's specials</h2></div>
-        <p>{live.length} offers on now · <a href={u('/specials')}>see all, filter by department</a></p>
+        <div><span class="eyebrow">{main ? fmtRange(main.start, main.end) : 'Weekly specials'}</span><h2 id="sp-title">This week's specials</h2></div>
+        <p><a href={u('/specials')} data-event="specials_view">See all {live.length} specials</a></p>
       </div>
-      {preview.length ? <div class="cards">{preview.map(s => <SpecialCard s={s} />)}</div>
-        : <div class="notice">This week's specials are in store now. The new catalogue goes live on Monday.</div>}
-      <p style="margin-top:1rem"><a class="btn" href={u('/specials')}>See all {live.length} specials</a></p>
+      {preview.length ? <div class="grid">{preview.map((s) => <SpecialCard s={s} />)}</div>
+        : <div class="notice">This week's specials are in store now.{next && <> The next catalogue starts {fmtDate(next.start)}.</>}</div>}
     </div>
   </section>
 
-  <section class="section" aria-labelledby="dept-title" style="background:var(--paper-deep)">
-    <div class="wrap">
+  <div class="awning" aria-hidden="true"></div>
+
+  <section class="section band-paper" aria-labelledby="dept-title">
+    <div class="container">
       <div class="section-head"><div><span class="eyebrow">All under one roof</span><h2 id="dept-title">Shop by department</h2></div></div>
       <div class="tiles">
-        {depts.map(d => (
-          <a class="tile" href={u(`/departments/${d.slug}`)} style={`background:${d.colour}`}>
+        {store.departments.map((d) => (
+          <a class="tile" href={u(`/departments/${d.slug}`)}>
+            {d.image && <img src={d.image} alt="" loading="lazy" decoding="async" width="600" height="450" />}
             <span class="t">{d.name}</span>
             <span class="s">{d.blurb}</span>
           </a>
@@ -47,45 +48,50 @@ const depts = site.departments;
     </div>
   </section>
 
-  <section class="section" aria-labelledby="cafe-title">
-    <div class="wrap split">
-      <div class="panel">
+  <ReelsWall />
+
+  <section class="section band-bottle" aria-labelledby="cafe-title">
+    <div class="container split">
+      <div>
         <span class="eyebrow">Café</span>
-        <h2 id="cafe-title">Antonio's fresh gnocchi bar</h2>
-        <p>{site.cafe.intro}</p>
-        <p>Café hours: {site.cafeHours.map(h => `${h.day} ${h.open} – ${h.close}`).join(' · ')}.</p>
-        <a class="btn green" href={u('/cafe')}>View the menu</a>
+        <h2 id="cafe-title">{cafe.subtitle}</h2>
+        <p>{cafe.intro}</p>
+        <p>Café hours: {store.cafeHours.map((h) => `${h.days} ${h.open} – ${h.close}`).join(' · ')}.</p>
+        <a class="btn btn-light" href={u('/cafe')}>View the menu</a>
       </div>
-      <div class="panel">
-        <span class="eyebrow">Fresh this week</span>
-        <h2>Made here, landed here</h2>
-        <p>Fresh pasta and gnocchi are handmade in the market every day. Seafood arrives through the week, with the widest range on Thursdays. Our butchers cut to order.</p>
-        <p><a href={u('/departments/fresh-pasta')}>Fresh pasta and ready meals</a> · <a href={u('/departments/seafood')}>Seafood</a> · <a href={u('/departments/butcher')}>Butcher</a></p>
+      <div>
+        <h3>Handmade every morning</h3>
+        <p>Pasta and gnocchi are made in the market from the first mix to the final cut, and sold fresh at the counter or served at the gnocchi bar.</p>
+        <p><a href={u('/departments/fresh-pasta')}>Fresh pasta and ready meals</a></p>
       </div>
     </div>
   </section>
 
-  <section class="section" aria-labelledby="visit-title" style="background:var(--paper-deep)">
-    <div class="wrap split">
+  {seasonal && (
+    <section class="section" aria-labelledby="season-title">
+      <div class="container split">
+        <div>
+          <span class="eyebrow">{seasonal.eyebrow}</span>
+          <h2 id="season-title">{seasonal.title}</h2>
+          <p>{seasonal.intro}</p>
+          {seasonal.cutoffDate && <p class="muted">Orders close {fmtDate(seasonal.cutoffDate, { weekday: 'long', day: 'numeric', month: 'long' })}.</p>}
+          <a class="btn btn-bottle" href={u('/' + seasonal.key)}>{seasonal.key === 'christmas' ? 'Christmas pre-orders' : 'Find out more'}</a>
+        </div>
+        {seasonal.image && <img src={seasonal.image} alt="" loading="lazy" decoding="async" width="800" height="600" style="border-radius:10px" />}
+      </div>
+    </section>
+  )}
+
+  <section class="section band-paper" aria-labelledby="visit-title">
+    <div class="container split">
       <div>
         <span class="eyebrow">Visit</span>
         <h2 id="visit-title">Moorabbin Super Centre, Warrigal Road</h2>
-        <p>{site.address.line1}, {site.address.centre}, {site.address.locality} {site.address.region} {site.address.postcode}. Free parking at the centre.</p>
-        <p><a class="btn" href={site.mapsUrl} rel="noopener">Get directions</a> <a class="btn ghost" href={site.phoneHref}>Call {site.phone}</a></p>
-        <p><a href={u('/visit')}>Parking, public transport and holiday hours</a></p>
+        <p>{store.address.line1}, {store.address.centre}, {store.address.locality} {store.address.region} {store.address.postcode}. {store.address.parking}.</p>
+        <p><a class="btn btn-bottle" href={store.mapsUrl} rel="noopener" data-event="directions_click">Get directions</a></p>
+        <p><a href={u('/visit')}>Hours, parking and public transport</a></p>
       </div>
-      <div><HoursTable /></div>
+      <Subscribe />
     </div>
   </section>
-
-  <section class="section" aria-labelledby="story-title">
-    <div class="wrap">
-      <span class="eyebrow">Our story</span>
-      <h2 id="story-title">A family-run continental supermarket</h2>
-      <p>Market Europa is a family-run continental supermarket in the Moorabbin and Kingston area: fruit and veg, a deli and cheese cabinet, in-house butchers, fresh seafood, handmade pasta, bakery and a café, all under one roof. [Family story, year established and names to be supplied by the store.]</p>
-      <p><a href={u('/about')}>Read more</a> · <a href={u('/catering')}>Platters and catering enquiries</a></p>
-    </div>
-  </section>
-
-  <Subscribe />
 </Base>

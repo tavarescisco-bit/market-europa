@@ -1,16 +1,22 @@
 ---
 import Base from '../layouts/Base.astro';
-import site from '../data/site.json';
+import { store } from '../lib/content';
 import { u } from '../lib/url';
 ---
-<Base title="Our story" description="Market Europa Moorabbin is a family-run continental supermarket with café in Melbourne's south east." current="/about">
-  <div class="wrap section">
-    <span class="eyebrow">Our story</span>
-    <h1>A family-run continental supermarket</h1>
-    <p>Market Europa is a family-run continental supermarket in the Moorabbin and Kingston area with an on-site café. Fresh fruit and veg every day, a deli and cheese cabinet, in-house butchers, fresh seafood, pasta and gnocchi handmade in the market, bakery and pastry, and the European pantry brands our customers grew up with.</p>
-    <p>[Family story, year established, the people behind the counters and the suppliers you are proud of: to be written with the store.]</p>
-    <p>We are members of A Better Choice, the independent fresh-food retailers' program.</p>
-    <p><a class="btn" href={u('/visit')}>Plan your visit</a> <a class="btn ghost" href={u('/specials')}>This week's specials</a></p>
-    <p>Our sister store: <a href={site.sisterStore.url} rel="noopener">{site.sisterStore.name}</a>.</p>
-  </div>
+<Base title="Our story" description="Market Europa Moorabbin is a family-run European supermarket and café in Melbourne's south east." current="/about">
+  <section class="section">
+    <div class="container split">
+      <div>
+        <span class="eyebrow">Our story</span>
+        <h1>A family-run European supermarket</h1>
+        <p class="lede">Fruit and veg every day, a deli and cheese cabinet, in-house butchers, fresh seafood, pasta and gnocchi handmade in the market, bakery and pastry, and the European pantry brands our customers grew up with, all under one roof in Moorabbin Super Centre.</p>
+        {store.familyStory ? <p>{store.familyStory}</p> : <p>We are members of A Better Choice, the independent fresh-food retailers' program.</p>}
+        <p><a class="btn btn-bottle" href={u('/visit')}>Plan your visit</a></p>
+      </div>
+      <div class="panel" aria-label="Then and now">
+        <span class="eyebrow">Then and now</span>
+        <p class="muted">Photographs from the family archive and the store today will sit here, with a short oral-history video from the family.</p>
+      </div>
+    </div>
+  </section>
 </Base>

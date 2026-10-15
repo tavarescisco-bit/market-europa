@@ -1,11 +1,12 @@
 ---
-import site from '../data/site.json';
-const dow = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(new Intl.DateTimeFormat('en-US', { weekday: 'short', timeZone: 'Australia/Melbourne' }).format(new Date()));
+import { store, melbourneDow } from '../lib/content';
+interface Props { caption?: string }
+const { caption = 'Store hours' } = Astro.props;
+const dow = melbourneDow();
 ---
 <table class="hours">
-  <caption class="eyebrow" style="text-align:left;padding-bottom:.4rem">Store hours</caption>
+  <caption class="eyebrow" style="text-align:left">{caption}</caption>
   <tbody>
-    {site.hours.map(h => <tr class={h.dow === dow ? 'today' : ''}><th scope="row">{h.day}</th><td>{h.open} – {h.close}</td></tr>)}
+    {store.hours.map((h) => <tr class={h.dow === dow ? 'today' : ''}><th scope="row">{h.day}</th><td>{h.open} – {h.close}</td></tr>)}
   </tbody>
 </table>
-<p class="form-note" style="margin-top:.5rem">{site.hoursNote}</p>

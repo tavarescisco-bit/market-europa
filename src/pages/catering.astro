@@ -1,34 +1,32 @@
 ---
 import Base from '../layouts/Base.astro';
-import site from '../data/site.json';
+import { store } from '../lib/content';
 const endpoint = import.meta.env.PUBLIC_ENQUIRY_URL || '';
 ---
-<Base title="Platters and catering enquiries" description="Ask Market Europa Moorabbin about antipasto and cheese platters, cakes and food for your gathering." current="/catering">
-  <div class="wrap section split">
-    <div>
-      <span class="eyebrow">Entertaining</span>
-      <h1>Platters and catering</h1>
-      <p>Tell us what you are planning and our deli team will come back to you with what we can do: antipasto and cheese platters, cakes and pastries, fresh pasta and sauces for a crowd. [Catering offer to be confirmed by the store; this page takes enquiries only until then.]</p>
-      <p>Or call us on <a href={site.phoneHref}>{site.phone}</a> during store hours.</p>
-    </div>
-    <div class="panel">
-      <form class="stack" id="enquiry" method="post" action={endpoint || '#'} data-live={endpoint ? 'true' : 'false'}>
-        <label>Your name <input name="name" id="enq-name" required autocomplete="name"></label>
-        <label>Phone <input name="phone" id="enq-phone" type="tel" required autocomplete="tel" inputmode="tel"></label>
-        <label>Email <input name="email" id="enq-email" type="email" autocomplete="email"></label>
-        <label>Event date <input name="date" id="enq-date" type="date"></label>
-        <label>Number of guests <input name="guests" id="enq-guests" type="number" min="1" inputmode="numeric"></label>
-        <label>What would you like? <textarea name="message" id="enq-message" rows="4"></textarea></label>
-        <label>How did you hear about us?
-          <select name="source" id="enq-source"><option value="">Choose one</option><option>Google</option><option>Facebook</option><option>Instagram</option><option>In store</option><option>Friend or family</option><option>Other</option></select>
-        </label>
-        <button class="btn" type="submit">Send enquiry</button>
+<Base title="Platters and catering" description="Ask Market Europa Moorabbin about antipasto and cheese platters, cakes and food for your gathering." current="/catering">
+  <section class="section">
+    <div class="container split">
+      <div>
+        <span class="eyebrow">Entertaining</span>
+        <h1>Platters and catering</h1>
+        <p class="lede">Tell us what you're planning and the deli team will come back to you with what we can do: antipasto and cheese platters, cakes and pastries, fresh pasta and sauces for a crowd.</p>
+        <p>Or call <a href={store.phoneHref} data-event="call_click">{store.phone}</a> during store hours.</p>
+      </div>
+      <form class="stack" id="enquiry" method="post" action={endpoint || '#'} data-live={endpoint ? 'true' : 'false'} novalidate>
+        <label for="enq-name">Your name<input name="name" id="enq-name" required autocomplete="name"></label>
+        <label for="enq-phone">Phone<input name="phone" id="enq-phone" type="tel" required autocomplete="tel" inputmode="tel"></label>
+        <label for="enq-email">Email<input name="email" id="enq-email" type="email" autocomplete="email"></label>
+        <label for="enq-date">Event date<input name="date" id="enq-date" type="date"></label>
+        <label for="enq-guests">Number of guests<input name="guests" id="enq-guests" type="number" min="1" inputmode="numeric"></label>
+        <label for="enq-message">What would you like?<textarea name="message" id="enq-message" rows="4"></textarea></label>
+        <label for="enq-source">How did you hear about us?<select name="source" id="enq-source"><option value="">Choose one</option><option>Google</option><option>Facebook</option><option>Instagram</option><option>In store</option><option>Friend or family</option><option>Other</option></select></label>
+        <button class="btn btn-primary" type="submit">Send enquiry</button>
         <p class="form-note" id="enq-status">We use your details only to answer this enquiry.</p>
       </form>
     </div>
-  </div>
+  </section>
 </Base>
 <script>
   const f = document.getElementById('enquiry') as HTMLFormElement | null; const st = document.getElementById('enq-status');
-  f?.addEventListener('submit', e => { if (f.dataset.live !== 'true') { e.preventDefault(); if (st) st.textContent = 'Enquiries are not switched on yet on this preview site. Nothing was sent.'; } });
+  f?.addEventListener('submit', (e) => { if (!f.checkValidity()) { e.preventDefault(); f.reportValidity(); return; } if (f.dataset.live !== 'true') { e.preventDefault(); if (st) st.textContent = 'Enquiries are not switched on yet. Nothing was sent. Please call the store.'; } });
 </script>

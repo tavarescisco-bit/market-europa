@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import site from '../data/site.json';
+import { departmentForSheetName } from './content';
 
 export type Special = {
   campaign: string;
@@ -33,7 +33,7 @@ export type Special = {
   weekSlug: string;
 };
 
-const DATA_FILE = path.resolve(process.cwd(), 'data/specials.csv');
+const DATA_FILE = path.resolve(process.cwd(), 'content/specials.csv');
 
 /** Today's date in Australia/Melbourne as YYYY-MM-DD. */
 export function todayMelbourne(): string {
@@ -146,9 +146,4 @@ export function fmtRange(start: string, end: string): string {
 }
 
 /** Department sheet names -> site department slugs */
-export function deptSlugFor(sheetName: string): string | null {
-  for (const d of site.departments as any[]) {
-    if (d.sheetName === sheetName || (d.extraSheetNames ?? []).includes(sheetName)) return d.slug;
-  }
-  return null;
-}
+export function deptSlugFor(sheetName: string): string | null { return departmentForSheetName(sheetName)?.slug ?? null; }

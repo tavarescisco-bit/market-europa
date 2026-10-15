@@ -1,27 +1,30 @@
 ---
 import Base from '../layouts/Base.astro';
 import HoursTable from '../components/HoursTable.astro';
-import site from '../data/site.json';
+import { store, fmtDate } from '../lib/content';
 import { u } from '../lib/url';
 ---
-<Base title="Visit: hours, parking and directions" description={`Market Europa Moorabbin is at ${site.address.line1}, ${site.address.centre}, ${site.address.locality} ${site.address.postcode}. Open 7 days. Free parking.`} current="/visit">
-  <div class="wrap section split">
-    <div>
-      <span class="eyebrow">Visit</span>
-      <h1>Find us</h1>
-      <p><strong>{site.name}</strong><br>{site.address.line1}<br>{site.address.centre}<br>{site.address.locality} {site.address.region} {site.address.postcode}</p>
-      <p><a class="btn" href={site.mapsUrl} rel="noopener">Get directions</a> <a class="btn ghost" href={site.phoneHref}>Call {site.phone}</a></p>
-      <h2 style="margin-top:1.5rem">Parking and transport</h2>
-      <p>Free on-site parking at Moorabbin Super Centre on Warrigal Road, on the Heatherton side of the road between South Road and Kingston Road. [Bus routes and entrance details to be confirmed with the store.]</p>
-      <h2>Public holidays</h2>
-      <p>Public-holiday hours are posted on our Facebook and Instagram and will appear here. [To be confirmed by the store.]</p>
-      <p>Looking for our Noble Park store? <a href={site.sisterStore.url} rel="noopener">{site.sisterStore.name}</a>, {site.sisterStore.address}, {site.sisterStore.phone}.</p>
+<Base title="Visit: hours, parking and directions" description={`Market Europa Moorabbin is at ${store.address.line1}, ${store.address.centre}, ${store.address.locality} ${store.address.postcode}. Open seven days. Free parking.`} current="/visit">
+  <section class="section">
+    <div class="container split">
+      <div>
+        <span class="eyebrow">Visit</span>
+        <h1>Find us</h1>
+        <p class="lede">{store.address.line1}<br>{store.address.centre}<br>{store.address.locality} {store.address.region} {store.address.postcode}</p>
+        <p><a class="btn btn-primary" href={store.mapsUrl} rel="noopener" data-event="directions_click">Get directions</a></p>
+        <h2 style="margin-top:32px">Parking</h2>
+        <p>{store.address.parking} at {store.address.centre}, on the Heatherton side of Warrigal Road between South Road and Kingston Road.</p>
+        {store.transport && <><h2>Public transport</h2><p>{store.transport}</p></>}
+        <h2>Public holidays</h2>
+        {store.holidayHours.length ? <ul>{store.holidayHours.map((h: any) => <li>{fmtDate(h.date, { weekday: 'long', day: 'numeric', month: 'long' })}: {h.hours}</li>)}</ul> : <p>Public-holiday hours are posted on <a href={store.social.facebook} rel="noopener">Facebook</a> and <a href={store.social.instagram} rel="noopener">Instagram</a> before each holiday.</p>}
+        <p>Looking for Noble Park? <a href={store.sisterStore.url} rel="noopener">{store.sisterStore.name}</a>.</p>
+      </div>
+      <div>
+        <HoursTable />
+        <h2 style="margin-top:32px">Café</h2>
+        <ul>{store.cafeHours.map((h) => <li>{h.days}: {h.open} – {h.close}</li>)}</ul>
+        <p><a href={u('/cafe')}>Café menu</a></p>
+      </div>
     </div>
-    <div>
-      <HoursTable />
-      <h2 style="margin-top:1.5rem">Café</h2>
-      <ul>{site.cafeHours.map(h => <li>{h.day}: {h.open} – {h.close}</li>)}</ul>
-      <p><a href={u('/cafe')}>Café menu</a></p>
-    </div>
-  </div>
+  </section>
 </Base>

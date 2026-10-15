@@ -1,0 +1,18 @@
+{
+  "active": "christmas",
+  "christmas": {
+    "title": "Christmas pre-orders",
+    "eyebrow": "Order ahead",
+    "intro": "Seafood, hams, panettone and platters, ordered ahead and collected from the counter.",
+    "cutoffDate": "",
+    "pickupDates": [],
+    "pickupSlots": [],
+    "ranges": [
+      { "slug": "seafood", "name": "Seafood", "items": [] },
+      { "slug": "hams", "name": "Hams", "items": [] },
+      { "slug": "panettone", "name": "Panettone", "items": [] },
+      { "slug": "platters", "name": "Platters", "items": [] }
+    ],
+    "image": ""
+  }
+}

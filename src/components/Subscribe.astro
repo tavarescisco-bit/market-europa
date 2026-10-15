@@ -1,32 +1,31 @@
 ---
-/* Email / SMS specials subscription. Posts to the endpoint set in PUBLIC_SUBSCRIBE_URL (Brevo form or a worker).
-   Until that is configured the form explains it is not yet live, so no one believes they subscribed. */
+/* Weekly specials email (double opt-in handled by the email provider) and optional Thursday seafood SMS (separate, unticked consent).
+   Posts to PUBLIC_SUBSCRIBE_URL; until that is configured the form says so and sends nothing. */
+import { store } from '../lib/content';
 const endpoint = import.meta.env.PUBLIC_SUBSCRIBE_URL || '';
+const legal = store.legalName ? `${store.legalName}${store.abn ? ', ABN ' + store.abn : ''}` : 'Market Europa Moorabbin';
 ---
-<section class="section" id="subscribe" aria-labelledby="sub-title">
-  <div class="wrap">
-    <div class="panel">
-      <span class="eyebrow">Specials in your inbox</span>
-      <h2 id="sub-title">Get the specials every Monday</h2>
-      <p>One email a week with the new specials, and an optional text on Thursdays when the seafood lands. Unsubscribe any time.</p>
-      <form class="stack" id="subscribe-form" method="post" action={endpoint || '#'} data-live={endpoint ? 'true' : 'false'}>
-        <label>Email <input type="email" name="email" id="sub-email" autocomplete="email" required></label>
-        <label>Mobile (optional, for seafood alerts) <input type="tel" name="mobile" id="sub-mobile" autocomplete="tel" inputmode="tel"></label>
-        <label class="consent"><input type="checkbox" name="consent_email" id="sub-consent-email" required> Yes, email me Market Europa Moorabbin specials.</label>
-        <label class="consent"><input type="checkbox" name="consent_sms" id="sub-consent-sms"> Yes, text me when fresh seafood arrives (at most one text a week).</label>
-        <button class="btn" type="submit">Subscribe</button>
-        <p class="form-note" id="sub-status">We only use your details to send the specials. You can unsubscribe from every message. [Legal name and ABN to be confirmed.]</p>
-      </form>
-    </div>
-  </div>
-</section>
+<div class="panel" id="subscribe">
+  <span class="eyebrow">Specials in your inbox</span>
+  <h2>Get the specials every Monday</h2>
+  <p>One email a week with the new specials. Add your mobile if you'd like a text on Thursdays when the seafood lands. Unsubscribe any time.</p>
+  <form class="stack" id="subscribe-form" method="post" action={endpoint || '#'} data-live={endpoint ? 'true' : 'false'} novalidate>
+    <label for="sub-email">Email<input type="email" name="email" id="sub-email" autocomplete="email" required aria-describedby="sub-email-err"><span class="error" id="sub-email-err" hidden>Enter an email address like name@example.com.</span></label>
+    <label for="sub-mobile">Mobile (optional, for seafood texts)<input type="tel" name="mobile" id="sub-mobile" autocomplete="tel" inputmode="tel" pattern="[0-9 +]{8,16}"></label>
+    <label class="consent" for="sub-consent-email"><input type="checkbox" name="consent_email" id="sub-consent-email" required> Yes, email me Market Europa Moorabbin's weekly specials. I'll confirm by clicking the link in the first email.</label>
+    <label class="consent" for="sub-consent-sms"><input type="checkbox" name="consent_sms" id="sub-consent-sms"> Yes, text me when fresh seafood arrives on Thursdays (at most one text a week).</label>
+    <button class="btn btn-bottle" type="submit" data-event="signup_email">Subscribe</button>
+    <p class="form-note" id="sub-status">Sent by {legal}. Every message includes an unsubscribe link. We use your details only for the specials you asked for.</p>
+  </form>
+</div>
 <script>
   const f = document.getElementById('subscribe-form') as HTMLFormElement | null;
-  const st = document.getElementById('sub-status');
+  const st = document.getElementById('sub-status'); const emailErr = document.getElementById('sub-email-err');
   f?.addEventListener('submit', (e) => {
-    if (f.dataset.live !== 'true') {
-      e.preventDefault();
-      if (st) st.textContent = 'Subscriptions are not switched on yet on this preview site. Nothing was sent.';
-    }
+    const email = f.elements.namedItem('email') as HTMLInputElement; const ok = /.+@.+\..+/.test(email.value);
+    if (emailErr) emailErr.hidden = ok; email.setAttribute('aria-invalid', String(!ok));
+    if (!ok) { e.preventDefault(); email.focus(); return; }
+    if ((f.elements.namedItem('consent_sms') as HTMLInputElement)?.checked) window.dispatchEvent(new CustomEvent('me:event', { detail: { name: 'signup_sms' } }));
+    if (f.dataset.live !== 'true') { e.preventDefault(); if (st) st.textContent = 'Subscriptions are not switched on yet. Nothing was sent.'; }
   });
 </script>

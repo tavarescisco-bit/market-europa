@@ -1,6 +1,6 @@
 # Market Europa Moorabbin — website
 
-Static Astro site. Weekly specials are read from `data/specials.csv`, which `npm run sync` refreshes from the Google Sheet
+Static Astro site. Weekly specials are read from `content/specials.csv`, which `npm run sync` refreshes from the Google Sheet
 "Market Europa – Weekly Specials (source of truth)". The build only publishes rows whose dates include today (Australia/Melbourne),
 so finished campaigns disappear by themselves and scheduled ones appear on their start date. GitHub Actions rebuilds daily at 00:05 AEST.
 

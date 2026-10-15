@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import { store, seasonal, fmtDate } from '../lib/content';
+const x = seasonal.christmas;
+const endpoint = import.meta.env.PUBLIC_ORDER_URL || '';
+const hasRanges = x.ranges.some((r) => r.items.length > 0);
+---
+<Base title="Christmas seafood, hams, panettone and platters: pre-order" description="Pre-order Christmas seafood, leg ham, panettone and platters from Market Europa Moorabbin for pickup from the counter. Heatherton, Moorabbin Super Centre." current="/christmas">
+  <section class="section">
+    <div class="container split">
+      <div>
+        <span class="eyebrow">{x.eyebrow}</span>
+        <h1>{x.title}</h1>
+        <p class="lede">{x.intro}</p>
+        {x.cutoffDate && <p><strong>Orders close {fmtDate(x.cutoffDate, { weekday: 'long', day: 'numeric', month: 'long' })}.</strong></p>}
+        {x.pickupDates.length > 0 && <p>Pickup: {x.pickupDates.map((d: string) => fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })).join(', ')}.</p>}
+        <p>No payment online: pay when you collect. We'll email a confirmation, and the counter will have your order ready.</p>
+      </div>
+      {x.image && <img src={x.image} alt="Christmas table from Market Europa" width="900" height="675" loading="eager" decoding="async" style="border-radius:10px" />}
+    </div>
+  </section>
+
+  <section class="section band-paper">
+    <div class="container">
+      <h2>The Christmas range</h2>
+      {hasRanges ? (
+        <div class="split" style="margin-top:24px">
+          {x.ranges.filter((r) => r.items.length).map((r) => (
+            <div class="panel"><h3>{r.name}</h3><dl class="menu-list">{r.items.map((i: any) => <><dt>{i.name}</dt><dd>{[i.size, i.price ? '$' + i.price : ''].filter(Boolean).join(' · ')}</dd></>)}</dl></div>
+          ))}
+        </div>
+      ) : (
+        <p class="notice" style="margin-top:16px">The Christmas range and prices will be published here once confirmed. Ask at the counter or call {store.phone}.</p>
+      )}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container split">
+      <div>
+        <h2>Pre-order form</h2>
+        <p>Tell us what you'd like and when you'll collect. We'll confirm by email within one business day.</p>
+      </div>
+      <form class="stack" id="xmas-form" method="post" action={endpoint || '#'} data-live={endpoint ? 'true' : 'false'} novalidate>
+        <label for="x-name">Your name<input id="x-name" name="name" required autocomplete="name"></label>
+        <label for="x-phone">Mobile<input id="x-phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel"></label>
+        <label for="x-email">Email<input id="x-email" name="email" type="email" required autocomplete="email"></label>
+        <label for="x-items">What would you like? (items, sizes, quantities)<textarea id="x-items" name="items" rows="5" required></textarea></label>
+        <label for="x-date">Pickup date
+          {x.pickupDates.length ? <select id="x-date" name="pickup_date" required>{x.pickupDates.map((d: string) => <option value={d}>{fmtDate(d, { weekday: 'long', day: 'numeric', month: 'long' })}</option>)}</select> : <input id="x-date" name="pickup_date" type="date" required>}
+        </label>
+        <label for="x-slot">Pickup time
+          {x.pickupSlots.length ? <select id="x-slot" name="pickup_slot" required>{x.pickupSlots.map((s: string) => <option>{s}</option>)}</select> : <input id="x-slot" name="pickup_slot" placeholder="e.g. 10:00am" required>}
+        </label>
+        <label for="x-notes">Notes (allergies, special requests)<textarea id="x-notes" name="notes" rows="2"></textarea></label>
+        <button class="btn btn-primary" type="submit" data-event="christmas_order_submit">Send pre-order</button>
+        <p class="form-note" id="x-status">We use your details only to prepare and confirm this order.</p>
+      </form>
+    </div>
+  </section>
+</Base>
+<style>.menu-list { margin: 0; display: grid; gap: 8px; } .menu-list dt { font-weight: 500; } .menu-list dd { margin: 0 0 8px; color: var(--espresso-70); }</style>
+<script>
+  const f = document.getElementById('xmas-form') as HTMLFormElement | null; const st = document.getElementById('x-status');
+  f?.addEventListener('submit', (e) => {
+    if (!f.checkValidity()) { e.preventDefault(); f.reportValidity(); return; }
+    if (f.dataset.live !== 'true') { e.preventDefault(); if (st) st.textContent = 'Pre-orders are not switched on yet. Nothing was sent. Please call the store.'; }
+  });
+</script>

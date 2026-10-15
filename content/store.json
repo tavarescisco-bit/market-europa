@@ -1,0 +1,59 @@
+{
+  "name": "Market Europa Moorabbin",
+  "shortName": "Market Europa",
+  "tagline": "Europe's pantry, on Warrigal Road",
+  "eyebrow": "European supermarket · Moorabbin",
+  "foundingYear": "",
+  "familyStory": "",
+  "familyNames": "",
+  "legalName": "",
+  "abn": "",
+  "liquorLicence": "",
+  "address": {
+    "line1": "Shop 5/444 Warrigal Road",
+    "centre": "Moorabbin Super Centre",
+    "locality": "Heatherton",
+    "region": "VIC",
+    "postcode": "3202",
+    "parking": "Free parking",
+    "lat": -37.9468,
+    "lng": 145.079
+  },
+  "phone": "03 9558 0755",
+  "phoneHref": "tel:+61395580755",
+  "mapsUrl": "https://www.google.com/maps/dir/?api=1&destination=Market+Europa+Supermarket,+5/444+Warrigal+Rd,+Heatherton+VIC+3202",
+  "social": {
+    "facebook": "https://www.facebook.com/MarketEuropaMoorabbin",
+    "instagram": "https://www.instagram.com/marketeuropamoorabbin"
+  },
+  "sisterStore": { "name": "Market Europa Noble Park", "url": "https://www.facebook.com/MarketEuropaNP" },
+  "hours": [
+    { "day": "Monday", "dow": 1, "open": "8:00am", "close": "6:00pm" },
+    { "day": "Tuesday", "dow": 2, "open": "8:00am", "close": "6:00pm" },
+    { "day": "Wednesday", "dow": 3, "open": "8:00am", "close": "6:00pm" },
+    { "day": "Thursday", "dow": 4, "open": "8:00am", "close": "6:30pm" },
+    { "day": "Friday", "dow": 5, "open": "8:00am", "close": "6:30pm" },
+    { "day": "Saturday", "dow": 6, "open": "8:00am", "close": "6:00pm" },
+    { "day": "Sunday", "dow": 0, "open": "9:00am", "close": "6:00pm" }
+  ],
+  "cafeHours": [
+    { "days": "Monday to Saturday", "open": "8:00am", "close": "2:30pm" },
+    { "days": "Sunday", "open": "9:00am", "close": "2:30pm" }
+  ],
+  "holidayHours": [],
+  "transport": "",
+  "departments": [
+    { "slug": "fruit-and-veg", "name": "Fruit & Veg", "sheetNames": ["Fruit & Veg"], "blurb": "Market-fresh produce every day.", "intro": "Fresh fruit and vegetables arrive every day: seasonal European staples next to the everyday basics, and the herbs the deli and café cook with.", "note": "", "image": "" },
+    { "slug": "deli-and-cheese", "name": "Deli & Cheese", "sheetNames": ["Deli & Smallgoods", "Cheese"], "blurb": "Smallgoods sliced to order and a cheese cabinet worth the drive.", "intro": "Leg ham, prosciutto, salami and sopressa sliced to order, olives and antipasto, and a cheese cabinet that runs from Gruyère and pecorino to halloumi, saganaki and fresh mascarpone.", "note": "", "image": "" },
+    { "slug": "butcher", "name": "Butcher", "sheetNames": ["Butcher"], "blurb": "In-house butchers, cut to order.", "intro": "Our butchers cut to order: steaks, roasts, chicken, lamb, house-made chevapi and sausages, with advice on what to cook and how.", "note": "", "image": "" },
+    { "slug": "seafood", "name": "Seafood", "sheetNames": ["Seafood"], "blurb": "Fresh seafood and oysters by the dozen.", "intro": "Tasmanian oysters, prawns, salmon, local mussels and whole fish land through the week.", "note": "Widest seafood range on Thursdays", "image": "" },
+    { "slug": "fresh-pasta", "name": "Fresh Pasta & Ready Meals", "sheetNames": ["Fresh Pasta", "Ready Meals"], "blurb": "Handmade pasta and gnocchi, sauces and ready meals.", "intro": "Pasta and gnocchi are handmade in the market, from the first mix to the final cut. Take home our sauces, lasagne and pizzas, or eat them at the café's gnocchi bar.", "note": "", "image": "" },
+    { "slug": "bakery", "name": "Bakery & Pastry", "sheetNames": ["Bakery"], "blurb": "Croissants, cannoli, crostoli and bread.", "intro": "Pistachio croissants, cannoli, crostoli, panettone in season and fresh bread, with the imported biscuits and sweets everyone comes back for.", "note": "", "image": "" },
+    { "slug": "grocery", "name": "Grocery & Imports", "sheetNames": ["Grocery & Imports"], "blurb": "Italian, Greek and European pantry staples.", "intro": "Pasta, passata, olive oil, coffee, rice, beans and honey from the brands you grew up with: La Molisana, Mutti, Rummo, Kimbo, Lavazza, Illy, Colavita and more.", "note": "", "image": "" },
+    { "slug": "liquor", "name": "Liquor", "sheetNames": ["Liquor"], "blurb": "Italian and European wine and liqueurs, in store.", "intro": "A considered range of Italian and European wine, Lambrusco, Chianti, Pinot Grigio, Amaretto, Limoncino and Frangelico. Available in store only, to customers aged 18 and over.", "note": "", "image": "", "liquor": true }
+  ],
+  "sheet": { "id": "1ERkqCux2ucSdfu71rkluqwzlg_L0aZt1f8tv2SjzkfY", "editUrl": "https://docs.google.com/spreadsheets/d/1ERkqCux2ucSdfu71rkluqwzlg_L0aZt1f8tv2SjzkfY/edit" },
+  "hero": { "poster": "", "mp4Desktop": "", "webmDesktop": "", "mp4Mobile": "", "webmMobile": "" },
+  "reels": [],
+  "analyticsId": ""
+}

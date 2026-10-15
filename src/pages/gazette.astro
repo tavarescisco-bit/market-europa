@@ -1,0 +1,21 @@
+---
+import Base from '../layouts/Base.astro';
+import Subscribe from '../components/Subscribe.astro';
+import { gazette, fmtDate } from '../lib/content';
+const issues: any[] = [...gazette.issues].sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+---
+<Base title="The Gazette" description="The Market Europa Gazette: every weekly specials email, with one story from the counters in each issue." current="/gazette">
+  <section class="section">
+    <div class="container">
+      <span class="eyebrow">Weekly</span>
+      <h1>The Gazette</h1>
+      <p class="lede">Every Monday email, kept here: the week's specials and one story from the counters.</p>
+      {issues.length ? (
+        <div class="grid" style="margin-top:24px">{issues.map((i) => <article class="card"><div class="body"><div class="eyebrow">{fmtDate(i.date, { day: 'numeric', month: 'long', year: 'numeric' })}</div><h3><a href={i.url || '#'}>{i.title}</a></h3><p class="meta">{i.summary}</p></div><div class="foot"></div></article>)}</div>
+      ) : (
+        <div class="notice">The first issue goes out with the next specials. Subscribe below to get it.</div>
+      )}
+    </div>
+  </section>
+  <section class="section band-paper"><div class="container"><Subscribe /></div></section>
+</Base>

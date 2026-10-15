@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Market Europa logo master</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:opsz,wght@6..96,600;6..96,700&family=Montserrat:wght@500;600&family=Caveat:wght@500&display=swap">
+<style>
+  /* Variants are driven by two colours: --ink (wordmark) and --gold (sprig, MARKET, SUPERMARKET). */
+  :root { --ink: #111111; --gold: #C9A24A; --bg: transparent; }
+  body.full { --ink: #111111; --gold: #C9A24A; }
+  body.black { --ink: #111111; --gold: #111111; }
+  body.white { --ink: #FFFFFF; --gold: #FFFFFF; }
+  body.whitegold { --ink: #FFFFFF; --gold: #D4AE5B; }
+  body.gold { --ink: #C9A24A; --gold: #C9A24A; }
+  body.brand { --ink: #2B1D14; --gold: #C9A24A; }
+  html, body { margin: 0; background: var(--bg); }
+  body { font-family: 'Montserrat', sans-serif; color: var(--ink); display: grid; place-items: center; min-height: 100vh; }
+  .lockup { display: grid; justify-items: center; text-align: center; width: var(--w, 1200px); padding: 11% 4% 4%; box-sizing: border-box; gap: 0; }
+  .market { font-family: 'Bodoni Moda', Georgia, serif; font-weight: 700; font-size: calc(var(--w) * 0.062); letter-spacing: 0.08em; color: var(--gold); line-height: 1; margin-bottom: calc(var(--w) * -0.006); justify-self: start; margin-left: 9%; }
+  .europa { position: relative; white-space: nowrap; font-family: 'Bodoni Moda', Georgia, serif; font-weight: 700; font-size: calc(var(--w) * 0.19); letter-spacing: 0.01em; color: var(--ink); line-height: 0.95; }
+  .europa .o { position: relative; display: inline-block; }
+  .europa svg.sprig { position: absolute; left: 30%; top: -30%; width: 104%; height: auto; }
+  .rule-row { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: calc(var(--w) * 0.02); width: 92%; margin-top: calc(var(--w) * 0.012); }
+  .rule-row::before, .rule-row::after { content: ""; height: 2px; background: var(--gold); }
+  .super { font-family: 'Montserrat', sans-serif; font-weight: 500; font-size: calc(var(--w) * 0.05); letter-spacing: 0.32em; color: var(--gold); padding-left: 0.32em; }
+  .values { font-family: 'Montserrat', sans-serif; font-weight: 600; font-size: calc(var(--w) * 0.03); letter-spacing: 0.22em; color: var(--ink); margin-top: calc(var(--w) * 0.03); padding-left: 0.22em; }
+  .values span { color: var(--gold); margin: 0 0.5em; }
+  .tag { font-family: 'Caveat', cursive; font-weight: 500; font-size: calc(var(--w) * 0.058); color: var(--ink); margin-top: calc(var(--w) * 0.012); }
+  /* compact lockups */
+  .lockup.compact .values, .lockup.compact .tag { display: none; }
+  .lockup.mark .market, .lockup.mark .rule-row, .lockup.mark .values, .lockup.mark .tag { display: none; }
+  .lockup.mark .europa { font-size: calc(var(--w) * 0.24); }
+  .lockup.mark .europa svg.sprig { top: -34%; }
+</style>
+</head>
+<body class="full">
+<div class="lockup">
+  <div class="market">MARKET</div>
+  <div class="europa">EUR<span class="o">O<svg class="sprig" viewBox="0 0 200 160" aria-hidden="true">
+    <g fill="var(--gold)">
+      <path d="M6 154 C 50 128, 100 86, 194 6" fill="none" stroke="var(--gold)" stroke-width="5" stroke-linecap="round"/>
+      <path d="M96 94 C 70 90, 56 70, 62 48 C 84 54, 98 72, 96 94 Z"/>
+      <path d="M118 74 C 92 70, 78 50, 84 28 C 106 34, 120 52, 118 74 Z"/>
+      <path d="M140 54 C 114 50, 100 30, 106 8 C 128 14, 142 32, 140 54 Z"/>
+      <path d="M104 102 C 110 128, 132 140, 156 134 C 150 112, 130 100, 104 102 Z"/>
+      <path d="M126 82 C 132 108, 154 120, 178 114 C 172 92, 152 80, 126 82 Z"/>
+      <path d="M148 62 C 154 88, 176 100, 200 94 C 194 72, 174 60, 148 62 Z"/>
+    </g></svg></span>PA</div>
+  <div class="rule-row"><div class="super">SUPERMARKET</div></div>
+  <div class="values">FRESH<span>•</span>PREMIUM<span>•</span>AUTHENTIC</div>
+  <div class="tag">Bringing the best to your table</div>
+</div>
+</body>
+</html>

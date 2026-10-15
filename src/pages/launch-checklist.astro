@@ -1,0 +1,15 @@
+---
+// Dev-only page: not emitted in production builds. Lists every unresolved item that needs the store's input.
+import Base from '../layouts/Base.astro';
+import { todos } from '../lib/content';
+export const prerender = true;
+const items = import.meta.env.DEV || import.meta.env.PUBLIC_SHOW_CHECKLIST === 'true' ? todos() : [];
+const areas = [...new Set(items.map((t) => t.area))];
+---
+<Base title="Launch checklist" description="Unresolved items before launch." noindex>
+  <section class="section"><div class="container">
+    <span class="eyebrow">Internal</span>
+    <h1>Launch checklist</h1>
+    {items.length ? areas.map((a) => <><h2 style="margin-top:32px">{a}</h2><ul class="todo">{items.filter((t) => t.area === a).map((t) => <li>{t.item}</li>)}</ul></>) : <p>This page is only populated in development builds.</p>}
+  </div></section>
+</Base>

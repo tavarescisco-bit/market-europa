@@ -1,37 +1,42 @@
 ---
 import Base from '../../layouts/Base.astro';
 import SpecialCard from '../../components/SpecialCard.astro';
-import site from '../../data/site.json';
+import { store, departmentForSheetName } from '../../lib/content';
 import { u } from '../../lib/url';
-import { liveSpecials, deptSlugFor } from '../../lib/specials';
+import { liveSpecials } from '../../lib/specials';
 
-export function getStaticPaths() {
-  return site.departments.map(d => ({ params: { slug: d.slug }, props: { d } }));
-}
-const { d } = Astro.props as { d: (typeof site.departments)[number] & { liquor?: boolean } };
-const live = liveSpecials().filter(s => deptSlugFor(s.department) === d.slug);
-const others = site.departments.filter(x => x.slug !== d.slug);
+export function getStaticPaths() { return store.departments.map((d) => ({ params: { slug: d.slug }, props: { d } })); }
+const { d } = Astro.props as { d: (typeof store.departments)[number] & { liquor?: boolean } };
+const live = liveSpecials().filter((s) => departmentForSheetName(s.department)?.slug === d.slug);
+const others = store.departments.filter((x) => x.slug !== d.slug);
+const titles: Record<string, string> = { 'deli-and-cheese': 'Continental deli and cheese in Heatherton', 'seafood': 'Fresh seafood in Moorabbin', 'butcher': 'Butcher in Moorabbin', 'fruit-and-veg': 'Fruit and veg in Moorabbin', 'fresh-pasta': 'Fresh handmade pasta in Moorabbin', 'bakery': 'Bakery and pastry in Moorabbin', 'grocery': 'European groceries and imports in Moorabbin', 'liquor': 'Italian and European wine in Moorabbin' };
 ---
-<Base title={`${d.name} in Moorabbin`} description={`${d.name} at Market Europa Moorabbin: ${d.blurb} ${live.length ? `${live.length} specials on now.` : ''} Shop 5/444 Warrigal Rd, Heatherton.`} current="/departments">
-  <div class="wrap section">
-    <span class="eyebrow">Department</span>
-    <h1>{d.name}</h1>
-    <p>{d.intro}</p>
-    {d.liquor && <div class="notice liquor"><strong>18+ only.</strong> Liquor is sold in store to customers aged 18 and over. [Liquor licence number and the Liquor Control Victoria warning notice to be added once the licence is confirmed.]</div>}
-    <p>Serving Moorabbin, Heatherton, Cheltenham, Bentleigh East, Dingley Village, Highett and Clayton South from Moorabbin Super Centre, with free parking. <a href={u('/visit')}>Hours and directions</a>.</p>
-
-    <h2 style="margin-top:2rem">{d.name} specials this week</h2>
-    {live.length ? <div class="cards" style="margin-top:1rem">{live.map(s => <SpecialCard s={s} />)}</div>
-      : <div class="notice">No {d.name.toLowerCase()} specials in this week's catalogue. See <a href={u('/specials')}>all specials</a>.</div>}
-
-    <div class="panel" style="margin-top:2rem">
-      <span class="eyebrow">Photography placeholder</span>
-      <p style="margin:0">Department photography (counter, products, team) is scheduled for the photo day. This panel is replaced by the image.</p>
+<Base title={titles[d.slug] || d.name} description={`${d.name} at Market Europa Moorabbin: ${d.blurb} ${live.length ? live.length + ' specials on now.' : ''} Shop 5/444 Warrigal Road, Heatherton.`} current="/departments">
+  <section class="section" style="padding-top:48px">
+    <div class="container split">
+      <div>
+        <span class="eyebrow">Department</span>
+        <h1>{d.name}</h1>
+        <p class="lede">{d.intro}</p>
+        {d.note && <p><span class="stamp">{d.note}</span></p>}
+        {d.liquor && <div class="notice liquor"><strong>18+ only.</strong> Liquor is sold in store to customers aged 18 and over.{store.liquorLicence && <> Liquor licence {store.liquorLicence}.</>}</div>}
+        <p class="muted">Serving Moorabbin, Heatherton, Cheltenham, Bentleigh East, Dingley Village, Highett and Clayton South from Moorabbin Super Centre. <a href={u('/visit')}>Hours and directions</a>.</p>
+      </div>
+      {d.image ? <img src={d.image} alt={`${d.name} counter at Market Europa Moorabbin`} width="900" height="675" loading="eager" decoding="async" style="border-radius:10px" /> : <div class="panel band-paper" style="min-height:240px;display:grid;place-items:center" aria-hidden="true"><span class="stamp">{d.name}</span></div>}
     </div>
+  </section>
 
-    <h2 style="margin-top:2rem">Other departments</h2>
-    <div class="tiles" style="margin-top:1rem">
-      {others.map(o => <a class="tile" href={u(`/departments/${o.slug}`)} style={`background:${o.colour};min-height:110px`}><span class="t">{o.name}</span></a>)}
+  <section class="section band-paper">
+    <div class="container">
+      <div class="section-head"><div><span class="eyebrow">On special</span><h2>{d.name} specials this week</h2></div><p><a href={u('/specials')}>All specials</a></p></div>
+      {live.length ? <div class="grid">{live.map((s) => <SpecialCard s={s} />)}</div> : <div class="notice">No {d.name.toLowerCase()} specials in this week's catalogue. See <a href={u('/specials')}>all specials</a>.</div>}
     </div>
-  </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="section-head"><h2>Other departments</h2></div>
+      <div class="tiles">{others.map((o) => <a class="tile" href={u(`/departments/${o.slug}`)} style="min-height:120px">{o.image && <img src={o.image} alt="" loading="lazy" decoding="async" width="600" height="450" />}<span class="t">{o.name}</span></a>)}</div>
+    </div>
+  </section>
 </Base>
